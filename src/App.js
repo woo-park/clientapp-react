@@ -8,7 +8,7 @@ import About from './components/About';
 import Main from './components/Main';
 import Navigation from './components/Navigation';
 import Motive from './components/Motive';
-import Exhibitions from './components/Exhibitions';
+import Wave from './components/Wave';
 import Contact from './components/Contact';
 import Individual from './components/Individual';
 import FindEmoji from './components/FindEmoji';
@@ -57,7 +57,7 @@ function App() {
 
           <div className="item-a header one-edge-shadow">
             <div className="portfolioLogo">
-              <h1>Jane Park</h1>
+              <h1>Wave Generator</h1>
                 {/*<div className="headerLogo">Head logo2</div>*/}
             </div>
             <Link className="headerMenu navigation-list" to="/login">
@@ -86,7 +86,7 @@ function App() {
             <Route exact path="/about" component={About} />
             <Route exact path="/motive" component={Motive} />
             <Route exact path="/contact" component={Contact} />
-            <Route exact path="/exhibitions" component={Exhibitions} />
+            <Route exact path="/wave" component={Wave} />
             <Route exact path="/findEmoji" component={FindEmoji} />
 
 

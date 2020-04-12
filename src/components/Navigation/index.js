@@ -73,11 +73,11 @@ const Navigation = (props) => {
           >Motive</span>
         </section>
       </Link>
-      <Link className="navigation-list" to="/exhibitions">
+      <Link className="navigation-list" to="/wave">
         <section className="">
           <span className=""
                 onClick={onNavClick}
-          >Exhibitions</span>
+          >Wave</span>
         </section>
       </Link>
 

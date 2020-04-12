@@ -83,21 +83,21 @@ class MyApp extends Component {
 
   render() {
     return (
-      <div class="container">
+      <div className="container">
 
-        <div class="panel panel-default">
+        <div className="panel panel-default">
 
-          <div class="panel-heading">
+          <div className="panel-heading">
           <h1>Welcome {this.state.username}</h1>
-            <h3 class="panel-title">
+            <h3 className="panel-title">
               BOOK CATALOG &nbsp;
               {localStorage.getItem('jwtToken') &&
                 <button class="btn btn-primary" onClick={this.logout}>Logout</button>
               }
             </h3>
           </div>
-          <div class="panel-body">
-            <table class="table table-stripe">
+          <div className="panel-body">
+            <table className="table table-stripe">
               <thead>
                 <tr>
                   <th>ISBN</th>
