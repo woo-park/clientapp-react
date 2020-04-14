@@ -4,6 +4,9 @@ function Sketch(p) {
   let tide = [];
   let swellSize = [];
   let swellPeriods = [];
+  let swellDates = []   // dont really need this but wtv
+  let swellTime = []    // might be handy later on
+  let swellTemp = []
 
   //timer
   let hourly_counter = 0
@@ -88,15 +91,24 @@ function Sketch(p) {
   let counter = 1
   let myFrameCount = 2
 
-
+  let pauseState = false
   p.myCustomRedrawAccordingToNewPropsHandler = function(props) {
+
+    if(props.pauseState !== '') {
+      console.log(props.pauseState)
+      pauseState = props.pauseState
+    }
+
     if(props.waveData) {
+      console.log(props.waveData)
+
+
       let waveDataState = props.waveData
       if(waveDataState !== '' || typeof waveDataState !== 'undefined') {
         waveDataState = parseData(waveDataState)
         plotOutColumn(waveDataState)
-        console.log(waveDataState,'waveDataState')
-        console.log('new data plotting')
+        // console.log(waveDataState,'waveDataState')
+        console.log('new data plotted')
       }
     }
   } // end of myCustomRedrawAccordingToNewPropsHandler
@@ -113,6 +125,12 @@ function Sketch(p) {
               return p.map(item, 0, 12, 10, 400).toFixed(0)
             } else if (i == 2) {
               return p.map(item, 3, 15, 1, 1000 ).toFixed(0)
+            } else if (i == 3) {  // date
+              return item
+            } else if (i == 4) {  // time
+              return item
+            } else if (i == 5) {  // time
+              return item
             }
           })
         }
@@ -126,6 +144,12 @@ function Sketch(p) {
               return p.map(item, 0, 12, 10, 400).toFixed(0)
             } else if (i == 2) {
               return p.map(item, 3, 15, 1, 1000 ).toFixed(0)
+            } else if (i == 3) {  // date
+              return item
+            } else if (i == 4) {  // time
+              return item
+            } else if (i == 5) {  // time
+              return item
             }
           })
         } else {
@@ -141,12 +165,15 @@ function Sketch(p) {
         tide[index - 1] = each[0]
         swellSize[index -1] = each[1]
         swellPeriods[index -1] = each[2]
+        swellDates[index -1] = each[3]
+        swellTime[index - 1] = each[4]
+        swellTemp[index - 1] = each[5]
       }
     })
     // console.log(tide)
     // console.log(swellSize)
     // console.log(swellPeriods)
-    console.log('New data has been plotted')
+    console.log('tide, swellSize, swellPeriods have been changed')
   }
 
   p.preload = function() {
@@ -157,12 +184,15 @@ function Sketch(p) {
     // })
 
     // sampleData
+
     p.loadTable('http://localhost:3002/api/waveDB/sample', (sampleTable) => {
       // console.log(sampleTable.rows)
       // sampleData = [...sampleTable.rows]
+      console.log('preload initial sample request')
       sampleData = parseData(sampleTable.rows)
-      plotOutColumn(sampleData)
       console.table(sampleData,'initial sample Data')
+      plotOutColumn(sampleData)
+
     })  //end of callback
   }
 
@@ -272,8 +302,8 @@ function Sketch(p) {
 
                 let xPerspective = 500
 
-                this.x1 = i
-                this.x2 = p.pow(i, this.exponential)
+                this.x1 = i + p.map(p.mouseX, 0, p.width, xPerspective, 0) - xPerspective -30
+                this.x2 = p.pow(i, this.exponential) + p.map(p.mouseX, 0, p.width, 0, xPerspective)  - xPerspective
 
                 p.vertex( this.x1, linesY1[i])
                 p.vertex( this.x2, linesY2[i])
@@ -515,13 +545,15 @@ function Sketch(p) {
       // shiftUp()
       // wave.setCurrentHour(hourly_counter)
 
-
-      shiftRight()
-      wave2.addNoise();
+      if(pauseState) {
+        shiftRight()
+        wave2.addNoise();
+        wave2.setCurrentHour(hourly_counter)
+        wave2.setPerspective()
+        wave2.amplitude_change()
+      }
       wave2.displayLines()
-      wave2.setCurrentHour(hourly_counter)
-      wave2.setPerspective()
-      wave2.amplitude_change()  //for wave2 -> its prolly better to do with framecount % 2 == 0
+        //for wave2 -> its prolly better to do with framecount % 2 == 0
     }
 
     p.keyPressed = function() {
