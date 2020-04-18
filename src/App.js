@@ -13,22 +13,24 @@ import Contact from './components/Contact';
 import Individual from './components/Individual';
 import FindEmoji from './components/FindEmoji';
 import { Link } from 'react-router-dom';
-
+import { connect } from 'react-redux';
 import initData from './initData.js';
 
 
 import MyApp from './components/MyApp';
 import Login from './components/Login';
 import Register from './components/Register';
+import Table from './components/Table'
 
 
-function App() {
+function App(props) {
   const [mobile, setMobile] = useState(false);
   const currentYear = new Date().getFullYear();
 
+  // console.log(props.waveData,'IMPORTANT')
+  // console.log(props)
   useEffect(()=>{
-
-    document.title = 'Jane Artworks';
+    document.title = 'Wave Seeker';
 
     const checkDevice = () => {
       if (window.screen.width < 660) {
@@ -88,7 +90,7 @@ function App() {
             <Route exact path="/contact" component={Contact} />
             <Route exact path="/wave" component={Wave} />
             <Route exact path="/findEmoji" component={FindEmoji} />
-
+            <Route exact path="/table" component={Table} />
 
 
             {/*  {initData.map(each =>
@@ -117,7 +119,17 @@ function App() {
   );
 }
 
-export default App;
+function mapStateToProps(state) {
+  // console.log(state, 'from reducer')
+  const { waveData } = state.waveData;
+
+  return {
+    waveData: waveData
+  };
+}
+
+
+export default connect(mapStateToProps)(App);
 
 
 // <img src="./assets/images/flower1.jpeg">

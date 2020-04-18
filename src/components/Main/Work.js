@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState} from 'react';
+// import { Link } from 'react-router-dom';
 // import { connect } from 'react-redux';
 import SmallImage from './SmallImage'
 
 const Work = (props) => {
-  const onNavClick = () => {
-  }
+  // const onNavClick = () => {
+  // }
   const [mainImage, setMainImage]  = useState(props.project.pictureURL)
   const [mainImageLink, setMainImageLink] = useState(props.project.link)
 
@@ -22,7 +22,7 @@ const Work = (props) => {
     <>
       <div className="work">
         <a href={mainImage}>
-          <img className="workImage" src={mainImage}></img>
+          <img className="workImage" src={mainImage} alt="mainimg"></img>
         </a>
         <div className="workDescription">
           <p>{props.project.title}</p>

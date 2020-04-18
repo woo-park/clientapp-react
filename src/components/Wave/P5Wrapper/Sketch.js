@@ -9,25 +9,69 @@ function Sketch(p) {
   let swellTemp = []
 
   //timer
-  let hourly_counter = 0
+  let hourly_counter = new Date().getHours()
   let mySec = 0
   let myMin = 0
-  let webGameTime = 6
+  let webGameTime = 1
   let am_or_pm
 
+  let myMinute = 0
+  let myHour = 0
+  let myymin = 0
   //sound
-  let mySound
+  // let mySound
+
+  var start = new Date().getTime(),
+  startMin = new Date().getMinutes(),
+    time = 0,
+    elapsed = '0.0'
+  function instance() {
+      time += 100;
+
+      elapsed = Math.floor(time / 100) / 10;
+      if(Math.round(elapsed) == elapsed) { elapsed += '.0'; }
+
+      var diff = (new Date().getTime() - start) - time;
+      // if(time >= 60000) {
+      //   time = 0
+      //   elapsed = '0.0'
+      //   myymin += 1
+      // }
+
+      if(elapsed % 60 == 0) {
+        startMin += 1
+        // console.log('hourly_counter', hourly_counter, startMin)
+      }
+      if(startMin > 59){
+        hourly_counter = new Date().getHours()
+        startMin = new Date().getMinutes()
+        // console.log('hourly_counter', hourly_counter, startMin)
+      }
+
+      window.setTimeout(instance, (100 - diff));
+  }
+  window.setTimeout(instance, 100);
+
+
 
   function myClock(p) {
-    if (p.frameCount % 60 == 0) {
+    if (p.frameCount % 60 === 0) {
       mySec += 1
     }
 
-    myMin = Math.floor(mySec / webGameTime) //!important - defines 1hr
-    hourly_counter = myMin % 24
-    am_or_pm = hourly_counter == 23 || hourly_counter < 12? 'am' : 'pm';
+    myMin = Math.floor(mySec / webGameTime)      //!important => customize time
+
+    hourly_counter = myMin % 24;
+    //
+    //
+    // myMin = Math.floor(mySec / webGameTime) //!important - defines 1hr
+    //
+    // console.log(myMin)
+    // hourly_counter = myMin % 24
+    // am_or_pm = hourly_counter === 23 || hourly_counter < 12? 'am' : 'pm';
 
   }
+
 
 
   // wave1
@@ -73,6 +117,7 @@ function Sketch(p) {
   let temp_noise = 0.005
   let wave2Angle = 0
 
+  let lineCount = 6
 
 
   for(let k = 0; k < window.innerWidth - 300; k ++) {
@@ -95,12 +140,18 @@ function Sketch(p) {
   p.myCustomRedrawAccordingToNewPropsHandler = function(props) {
 
     if(props.pauseState !== '') {
-      console.log(props.pauseState)
+      // console.log(props.pauseState)
       pauseState = props.pauseState
     }
 
+    if(props.lineCount > 0) {
+      lineCount += 1
+    } else if (props.lineCount < 0){
+      lineCount -= 1
+    }
+
     if(props.waveData) {
-      console.log(props.waveData)
+      // console.log(props.waveData)
 
 
       let waveDataState = props.waveData
@@ -173,7 +224,10 @@ function Sketch(p) {
     // console.log(tide)
     // console.log(swellSize)
     // console.log(swellPeriods)
-    console.log('tide, swellSize, swellPeriods have been changed')
+    // console.log('tide, swellSize, swellPeriods have been changed')
+  }
+  p.windowResized = function() {
+    p.resizeCanvas(p.windowWidth, p.windowHeight);
   }
 
   p.preload = function() {
@@ -188,13 +242,98 @@ function Sketch(p) {
     p.loadTable('http://localhost:3002/api/waveDB/sample', (sampleTable) => {
       // console.log(sampleTable.rows)
       // sampleData = [...sampleTable.rows]
-      console.log('preload initial sample request')
+      // console.log('preload initial sample request')
       sampleData = parseData(sampleTable.rows)
-      console.table(sampleData,'initial sample Data')
+      // console.table(sampleData,'initial sample Data')
       plotOutColumn(sampleData)
 
     })  //end of callback
   }
+
+
+  function bgLight (hourly_counter) {
+
+
+    let hr = hourly_counter
+    if (hr >= 0 && hr < 6) {              //midnight
+      bgLight.bg_r += bgLight.inc_night
+      bgLight.bg_g += bgLight.inc_night
+      bgLight.bg_b += bgLight.inc_night
+    } else if (hr >= 6 && hr < 12) {      //morning
+      bgLight.bg_r += bgLight.inc_day
+      bgLight.bg_g += bgLight.inc_day
+      bgLight.bg_b += bgLight.inc_day
+
+      bgLight.temp_a += 1;
+
+      bgLight.temp_a = p.constrain(bgLight.temp_a, 0, 80);
+      if(bgLight.temp_a < 79) {
+          bgLight.bg_a = 90;           //turns the opacity to .9 so that another light source comes thru
+      }
+
+
+      bgLight.sun_r += 1
+      bgLight.sun_g += 1
+      bgLight.sun_b += 1
+
+      bgLight.sun_r = p.constrain(bgLight.sun_r, 0, 255)
+      bgLight.sun_g = p.constrain(bgLight.sun_g, 22, 254)
+      bgLight.sun_b = p.constrain(bgLight.sun_b, 23, 107)
+
+      p.fill(bgLight.sun_r, bgLight.sun_g, bgLight.sun_b, bgLight.temp_a)
+      p.rect(0,0, p.width, p.height)
+    } else if (hr >= 12 && hr < 18) { // afternoon
+      bgLight.bg_r -= 0.3
+      bgLight.bg_g -= 0.3
+      bgLight.bg_b -= 0.3
+
+      if (hr >= 13) {
+        bgLight.temp_a -= 0.5;
+        bgLight.sun_r -= 0.1
+        bgLight.sun_g -= 0.1
+        bgLight.sun_b -= 0.1
+
+        bgLight.sun_r = p.constrain(bgLight.sun_r, 0, 255)
+        bgLight.sun_g = p.constrain(bgLight.sun_g, 22, 254)
+        bgLight.sun_b = p.constrain(bgLight.sun_b, 23, 107)
+        bgLight.temp_a = p.constrain(bgLight.temp_a, 0, 80)
+      }
+
+      if(bgLight.temp_a < 79) {
+        bgLight.bg_a = 100;
+      }
+
+      p.fill(bgLight.sun_r, bgLight.sun_g, bgLight.sun_b, bgLight.temp_a)
+      p.rect(0,0, p.width, p.height)
+    } else if (hr >= 18 && hr < 24) {
+      bgLight.bg_r -= bgLight.inc_day;
+      bgLight.bg_g -= bgLight.inc_day;
+      bgLight.bg_b -= bgLight.inc_day;
+    } else if (hr >= 24) {
+
+    }
+
+    bgLight.bg_r = p.constrain(bgLight.bg_r, 0, 255)
+    bgLight.bg_g = p.constrain(bgLight.bg_g, 0, 255)
+    bgLight.bg_b = p.constrain(bgLight.bg_b, 0, 255)
+
+    p.fill(bgLight.bg_r, bgLight.bg_g, bgLight.bg_b, bgLight.bg_a)
+    p.rect(0,0, p.width, p.height)
+  }
+
+  bgLight.bg_r = 0;
+  bgLight.bg_g = 0;
+  bgLight.bg_b = 0;
+  bgLight.bg_a = 100;
+
+  bgLight.inc_night = 0.05;        //inc smaller bc its during night
+  bgLight.inc_day = 0.5;
+
+  bgLight.temp_a = 0;
+
+  bgLight.sun_r = 254;
+  bgLight.sun_g = 84;
+  bgLight.sun_b = 23;
 
 
 
@@ -277,6 +416,7 @@ function Sketch(p) {
 
 
       displayLines() {
+          lineCount = p.constrain(lineCount, 2, 20)
           p.strokeCap(p.ROUND);
           p.strokeWeight(2);
           p.beginShape(p.LINES);
@@ -290,7 +430,7 @@ function Sketch(p) {
           linesY2[0] = this.offset + this.sineCurve(wave2Angle) * (this.amplitude * this.adding_noise) + this.between
 
           if(p.frameCount % myFrameCount == 0) {
-            for(let i = 1; i < linesY1.length; i += 4) {  // 1, 2, 3, 4, 5, till window.innerWidth - 500
+            for(let i = 0; i < linesY1.length; i += lineCount) {  // 1, 2, 3, 4, 5, till window.innerWidth - 500
                 let add_color = () => {
                     let r_normalize = p.map(i, 1, linesY1.length, 37, 11);
                     let g_normalize = p.map(i, 1, linesY1.length, 61, 50);
@@ -516,12 +656,15 @@ function Sketch(p) {
 
     p.setup = function(){
       p.strokeCap(p.SQUARE);
-      p.createCanvas(window.innerWidth, window.innerHeight, p.P2D);
+      const canvas = document.getElementById('defaultCanvas0');
+      console.log(canvas,'canvas')
+      p.createCanvas(1000, 1000, p.P2D);
+      // p.createCanvas(window.innerWidth, window.innerHeight, p.P2D);  //was like this, but it works with whats above
       // cnv.parent('container');
       p.noiseDetail(24);
 
       // blending canvas
-      // const canvas = document.getElementById('defaultCanvas0');
+
       // const ctx = canvas.getContext('2d');
       // ctx.globalCompositeOperation = 'xor';
 
@@ -531,12 +674,23 @@ function Sketch(p) {
     }
 
     p.draw = function() {
-      if(p.frameCount % myFrameCount == 0) {
-        p.clear()
+      if(p.frameCount % 13 == 0) {
+
+        // console.log(hourly_counter, startMin)
+        // console.log(elapsed, myymin, time)
       }
+      if(p.frameCount % myFrameCount == 0) {
+
+        // p.background(22,100,80)
+        p.clear()
+        // p.fill(22,100,80, 50)
+        //     p.rect(0,0, p.width, p.height);
+        bgLight(hourly_counter)
+      }
+      // myClock(p)
 
       // wave2 = new WaveLeft(p.height/2, swellSize[7], swellPeriods[7], p.map(p.mouseY, 0, p.height, 1.3, 1.45));
-      myClock(p)
+
 
       // wave.amplitude_change()
       // wave.displayLines()
@@ -551,8 +705,10 @@ function Sketch(p) {
         wave2.setCurrentHour(hourly_counter)
         wave2.setPerspective()
         wave2.amplitude_change()
+
       }
       wave2.displayLines()
+      console.log(wave2.currentHour, 'wave2 current hour', wave2.waveHeightArr, wave2.waveHeight)
         //for wave2 -> its prolly better to do with framecount % 2 == 0
     }
 

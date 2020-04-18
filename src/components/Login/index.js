@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './Login.css';
+import * as api from '../../api'
 
 class Login extends Component {
 
@@ -25,6 +26,7 @@ class Login extends Component {
 
     const { username, password } = this.state;
 
+    /* // the same but moved to api
     axios.post('/api/auth/login', { username, password })
       .then((result) => {
         localStorage.setItem('jwtToken', result.data.token);
@@ -36,12 +38,26 @@ class Login extends Component {
           this.setState({ message: 'Login failed. Username or password not match' });
         }
       });
+    */
+
+    api.login({username, password})
+    .then((res) => {
+      // console.log(res) // token
+      // console.log(localStorage.getItem('jwtToken'),'localstorage check')
+      this.setState({ message: '' });
+      this.props.history.push('/')
+    })
+    .catch((error) => {
+      if(error.response.status === 401) {
+        this.setState({ message: 'Login failed. Username or password not match' });
+      }
+    });
   }
 
   render() {
     const { username, password, message } = this.state;
     return (
-      <div className="container">
+      <div className="">
         <form className="form-signin" onSubmit={this.onSubmit}>
           {message !== '' &&
             <div className="alert alert-warning alert-dismissible" role="alert">
@@ -53,9 +69,9 @@ class Login extends Component {
           <input type="email" className="form-control" placeholder="Email address" name="username" value={username} onChange={this.onChange} required/>
           <label htmlFor="inputPassword" className="sr-only">Password</label>
           <input type="password" className="form-control" placeholder="Password" name="password" value={password} onChange={this.onChange} required/>
-          <button className="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+          <button className="customButton" type="submit">Login</button>
           <p>
-            Not a member? <Link to="/register"><span className="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Register here</Link>
+            Not a member? <Link to="/register"><span className="" aria-hidden="true"></span> Register here</Link>
           </p>
         </form>
       </div>

@@ -5,11 +5,11 @@ class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: 'Jane Park',
-      phoneNumber: '+1 310 464 7687',
-      email: 'janeparkart@gmail.com',
+      name: 'Woo Park',
+      phoneNumber: '+82 10 7540 1138',
+      email: 'wp503@nyu.edu',
       instagram: '',
-      portrait: '/assets/images/portrait.jpg'
+      portrait: '/assets/images/sample4.jpeg'
     }
   }
 
@@ -19,17 +19,17 @@ class Contact extends Component {
 
         <div className="contactSections">
           <img className="contactPortrait" src={this.state.portrait}></img>
-          </div>
-          <div className="contactSections">
+        </div>
+        <div className="contactSections">
 
-            <div>{this.state.name}</div>
-            <div>{this.state.phoneNumber}</div>
-            <div>{this.state.email}</div>
-            <div><a href={this.state.instagram}>Instagram</a></div>
+          <div>{this.state.name}</div>
+          <div>{this.state.phoneNumber}</div>
+          <div>{this.state.email}</div>
+          <div><a href={this.state.instagram}>Instagram</a></div>
 
-          </div>
+        </div>
 
-        
+
 
       </div>
     )

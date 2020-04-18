@@ -1,4 +1,4 @@
-import React, {useState, useEffect}from 'react';
+import React, {useState}from 'react';
 import { Link } from 'react-router-dom';
 // import { connect } from 'react-redux';
 
@@ -26,12 +26,11 @@ const Navigation = (props) => {
   const onMenuClick = () => {
     setShowMenu(!showMenu)
   }
-
   return(
 
 
     <div className="navigation">
-    {showMenu == true ? <div className="">
+    {showMenu === true ? <div className="">
       <Show
 
         onMenuClick={onMenuClick}
@@ -80,6 +79,14 @@ const Navigation = (props) => {
           >Wave</span>
         </section>
       </Link>
+      <Link className="navigation-list" to="/table">
+        <section className="">
+          <span className=""
+                onClick={onNavClick}
+          >Wave Table</span>
+        </section>
+      </Link>
+
 
     </div> :
         <Show

@@ -199,7 +199,7 @@ function sketch(p) {
       [animalsState, setAnimalsState] = props.animalsState
 
       if(typeof animalsState === 'undefined') {
-        console.log('animals state was undefined, assigned with props')
+        // console.log('animals state was undefined, assigned with props')
         setAnimalsState(initialAnimals)
       }
     }
@@ -208,7 +208,7 @@ function sketch(p) {
       [nodesState, setNodesState] = props.nodesState
 
       if(typeof nodesState === 'undefined'){
-        console.log('nodes state was undefined, assigned with props')
+        // console.log('nodes state was undefined, assigned with props')
         setNodesState(initialNodes)
       }
 
@@ -256,16 +256,16 @@ function sketch(p) {
 
   p.setup = function() {
     if (typeof nodesState == 'undefined') {
-      console.log('nodesState was ', nodesState, 'so we assigned in setup')
+      // console.log('nodesState was ', nodesState, 'so we assigned in setup')
       nodesState = initialNodes
     } else {
-      console.log('props came in first and assigned nodesState')
+      // console.log('props came in first and assigned nodesState')
     }
     if (typeof animalsState == 'undefined') {
-      console.log('animalsState was ', animalsState, 'so we assigned in setup')
+      // console.log('animalsState was ', animalsState, 'so we assigned in setup')
       animalsState = initialAnimals
     } else {
-      console.log('props came in first and assigned animalsState')
+      // console.log('props came in first and assigned animalsState')
     }
 
     p.createCanvas(p.windowWidth, p.windowHeight);

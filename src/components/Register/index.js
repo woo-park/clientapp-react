@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import '../Login/Login.css';
+import * as api from '../../api'
 
 class Create extends Component {
 
@@ -24,10 +25,16 @@ class Create extends Component {
 
     const { username, password } = this.state;
 
+    /*
     axios.post('/api/auth/register', { username, password })
       .then((result) => {
         this.props.history.push("/login")
       });
+    */
+    api.register({username, password}).then((result) => {
+      console.log(result.data,'after register')
+      this.props.history.push("/login")
+    })
   }
 
   render() {
@@ -40,7 +47,7 @@ class Create extends Component {
           <input type="email" className="form-control" placeholder="Email address" name="username" value={username} onChange={this.onChange} required/>
           <label htmlFor="inputPassword" className="sr-only">Password</label>
           <input type="password" className="form-control" placeholder="Password" name="password" value={password} onChange={this.onChange} required/>
-          <button className="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+          <button className="customButton" type="submit">Register</button>
         </form>
       </div>
     );

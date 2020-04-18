@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import SketchWrapper from './P5Wrapper/SketchWrapper.js'
 // import axios from 'axios'
 

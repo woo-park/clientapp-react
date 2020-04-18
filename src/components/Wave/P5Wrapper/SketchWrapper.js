@@ -5,6 +5,16 @@ import p5 from 'p5'
 import axios from 'axios'
 import Sketch from './Sketch'
 import Table from './../../Table'
+import FetchForm from './../../FetchForm'
+import { connect } from 'react-redux';
+
+
+import {
+  fetchWaveData,
+  postWaveData
+} from '../../../actions';
+
+
 
 const MemoizedP5Wrapper = React.memo(P5Wrapper)
 const MemoizedTable = React.memo(Table)
@@ -21,14 +31,17 @@ function SketchWrapper(props, action) {
     const [placeHolder, setPlaceHolder] = useState('Pick Your Spot');
     // const [spots, setSpots] = useState(false);
     const inputEl = useRef(null);
+    const [lineCount, setLineCount] = useState(0)
+    // console.log(props,'from sketchwrapper')
+    const [words, setWords] = useState('')
 
     // const [liveWaveDataState, setLiveWaveDataState] = useState('')
-    const mySketchAbsolute = {
-      pointerEvents: 'none',
-      position: 'absolute',
-      top: '0px',
-      left: '0px'
-    }
+    // const mySketchAbsolute = {
+    //   pointerEvents: 'none'
+    //   // position: 'absolute',
+    //   // top: '0px',
+    //   // left: '0px',
+    // }
 
     const inputContainer = {
       width: '400px',
@@ -37,6 +50,7 @@ function SketchWrapper(props, action) {
     }
 
     const convertCsv = (res) => {
+      console.log(res,'ressy')
       let csv = res
       let splitCsv = csv.split('\n')
       let nestedArrCsv = []
@@ -45,40 +59,46 @@ function SketchWrapper(props, action) {
       for(let i = 0; i < 25; i ++) {
         nestedArrCsv[i]  = splitCsv[i].split(',')
       }
-      // console.log(nestedArrCsv)
+      console.log(nestedArrCsv,'NESTED ARR')
+
       return nestedArrCsv
     }
 
     const onFetchData = (e) => {
       e.preventDefault()
-      axios.get('http://localhost:3002/api/waveDB/sample')
-       .then(response => {
-        setWaveDataState(convertCsv(response.data))
-       })
-       .catch(err => console.log(err))
+      // axios.get('http://localhost:3002/api/waveDB/sample')
+      //  .then(response => {
+      //
+      //    // why is it not updating?
+      //   setWaveDataState(convertCsv(response.data))
+      //  })
+      //  .catch(err => console.log(err))
+      // props.dispatch(fetchSampleData())
+      props.dispatch(fetchWaveData())
     }
 
-    const onPostData = (e) => {
-      e.preventDefault()
-      axios.post('http://localhost:3002/api/waveDB/data', { areacode: 51212 })
-       .then(response => {
-        setWaveDataState(convertCsv(response.data))
-       })
-       .catch(err => console.log(err))
-    }
+    // const onPostData = (e) => {
+    //   e.preventDefault()
+    //   axios.post('http://localhost:3002/api/waveDB/data', { areacode: 51212 })
+    //    .then(response => {
+    //     setWaveDataState(convertCsv(response.data))
+    //    })
+    //    .catch(err => console.log(err))
+    // }
 
-    useEffect(()=>{
-      axios.get('http://localhost:3002/api/waveDB/sample')
-       .then(response => {
-        setWaveDataState(convertCsv(response.data))
-       })
-       .catch(err => console.log(err))
-    }, [])
 
-    useEffect(()=>{
-      console.log('changed!')
-      console.log(waveDataState, 'waveDataState')
-    },[waveDataState])
+    // useEffect(()=>{
+    //   axios.get('http://localhost:3002/api/waveDB/sample')
+    //    .then(response => {
+    //     setWaveDataState(convertCsv(response.data))
+    //    })
+    //    .catch(err => console.log(err))
+    // }, [])
+
+    // useEffect(()=>{
+    //   // console.log('changed!')
+    //   // console.log(waveDataState, 'waveDataState')
+    // },[waveDataState])
 
     const onHandleChange = (e) => {
       var getSiblings = function (elem) {
@@ -87,31 +107,56 @@ function SketchWrapper(props, action) {
       	});
       };
       let siblings = getSiblings(e.target.parentElement)
+      console.log(siblings,'siblings')
       siblings.forEach(each => each.setAttribute("class", "hidden"))
 
-
-      // setInputChecked(!inputChecked)
-      if(e.target.checked) {
-          e.target.parentElement.setAttribute("class", "show");
-      }
-
+      console.log('hmm')
+      // // setInputChecked(!inputChecked)
+      // // if(e.target.checked) {
+      // //   console.log('checked?')
+      // //     e.target.parentElement.setAttribute("class", "show");
+      // // }
+      //
+       e.target.parentElement.classList.toggle('show')
 
       e.preventDefault()
       setPlaceHolder(e.target.name)
       setStationState(e.target.value)
+      oneByOne(e.target.name)
     }
 
     const onStationSubmit = (e) => {
       e.preventDefault()
-      console.log(stationState)
+      // console.log(stationState)
       let stationCode = stationState
+      props.dispatch(postWaveData(stationCode))
 
-      axios.post('http://localhost:3002/api/waveDB/official', {areacode: stationCode})
-       .then(response => {
-        setWaveDataState(convertCsv(response.data))
-       })
-       .catch(err => console.log(err))
+      // console.log(props.waveData,'posted and new data?')
+
+      // axios.post('http://localhost:3002/api/waveDB/official', {areacode: stationCode})
+      //  .then(response => {
+      //   setWaveDataState(convertCsv(response.data))
+      //  })
+      //  .catch(err => console.log(err))
     }
+
+    useEffect(()=>{   // initial sample data fetch
+      props.dispatch(fetchWaveData())
+
+      oneByOne("Stoked?")
+    },[])
+
+    useEffect(()=>{   // update waveDataState after store is updated
+      if(typeof props.waveData !== 'undefined') {
+        console.log(props.waveData,'posted and new data?-check')
+        setWaveDataState(convertCsv(props.waveData))
+      } else {
+
+      }
+
+
+    },[props.waveData])
+
 
     const onPause = (e) => {
       e.preventDefault()
@@ -130,14 +175,44 @@ function SketchWrapper(props, action) {
       e.stopPropagation()
       // e.target.classList.toggle('add')
       // console.log(e.target.classList)
-      console.log(inputEl.current)
+      // console.log(inputEl.current)
       inputEl.current.classList.toggle('add')
-      console.log(inputEl.current.classList,'reference element classList')
+      // console.log(inputEl.current.classList,'reference element classList')
     }
 
+    const onLineCount = (e) => {
+      e.preventDefault()
+      setLineCount(lineCount + Number(e.target.value))
+
+      console.log(lineCount)
+    }
+
+
+    const oneByOne = (str) => {
+      let arr = str.split('') //[ "t", "e", "m", "p", "l", "a", "t", "e" ]
+        let counter = 0
+
+        var timerId = null;
+        let acc = ''
+        let speed = 100
+        function myTimeoutFunction() {
+            if(counter < arr.length) {
+              acc += arr[counter]
+              setWords(acc)
+
+              counter += 1
+              timerId = setTimeout(myTimeoutFunction, speed);
+            }
+            console.log(0)
+        }
+        myTimeoutFunction()
+    }
+
+
     return (
-        <div onClick={()=>{inputEl.current.classList.remove('add')}}>
+        <div >
             <h1>Seek Your Wave</h1>
+            <h2>{words}</h2>
 
             {/*
               <form className="customForm">
@@ -175,69 +250,98 @@ function SketchWrapper(props, action) {
                 </div>
               </form>
               */}
+            <FetchForm
+              stations={stations}
+              stations2={stations2}
+              stations3={stations3}
+              onHandleChange={onHandleChange}
+              onStationSubmit={onStationSubmit}
+              onPlaceHolder={onPlaceHolder}
+              placeHolder={placeHolder}
+              inputEl={inputEl}
+            />
+
+            {/*
+              <form className="customForm">
+                <div onClick={onPlaceHolder} className="placeHolder" >{placeHolder}</div>
+
+                <div ref={inputEl} className="customSelectOption">
+                  {stations.map((each, index) =>
+                    <label key={index} className="hidden">
+                        <input className="hiddenInput" onChange={onHandleChange} type="radio" name={Object.keys(each)} value={Object.values(each)}/>
+                        <span className=""><i></i>{Object.keys(each)}</span>
+                    </label>
+                  )}
+                  <span>&nbsp;</span>
+                  {stations2.map((each, index) =>
+                    <label key={index} className="hidden">
+                        <input className="hiddenInput" onChange={onHandleChange} type="radio" name={Object.keys(each)} value={Object.values(each)}/>
+                        <span className=""><i></i>{Object.keys(each)}</span>
+                    </label>
+                  )}
+                  <span>&nbsp;</span>
+                  {stations3.map((each, index) =>
+                    <label key={index} className="hidden">
+                        <input className="hiddenInput" onChange={onHandleChange} type="radio" name={Object.keys(each)} value={Object.values(each)}/>
+                        <span className=""><i></i>{Object.keys(each)}</span>
+                    </label>
+                  )}
+                </div>
+                <button
+                  className="customButton"
+
+                  onClick={(e)=>{onStationSubmit(e); inputEl.current.classList.remove('add')}}
+                  type="button"
+                >
+                  Request New Data
+                </button>
+              </form>
+              */}
 
 
-            <form className="customForm">
-              <div onClick={onPlaceHolder} className="placeHolder" >{placeHolder}</div>
-
-              <div ref={inputEl} className="customSelectOption">
-                {stations.map((each, index) =>
-                  <label key={index} className="hidden">
-                      <input className="hiddenInput" onChange={onHandleChange} type="radio" name={Object.keys(each)} value={Object.values(each)}/>
-                      <span className=""><i></i>{Object.keys(each)}</span>
-                  </label>
-                )}
-                <span>&nbsp;</span>
-                {stations2.map((each, index) =>
-                  <label key={index} className="hidden">
-                      <input className="hiddenInput" onChange={onHandleChange} type="radio" name={Object.keys(each)} value={Object.values(each)}/>
-                      <span className=""><i></i>{Object.keys(each)}</span>
-                  </label>
-                )}
-                <span>&nbsp;</span>
-                {stations3.map((each, index) =>
-                  <label key={index} className="hidden">
-                      <input className="hiddenInput" onChange={onHandleChange} type="radio" name={Object.keys(each)} value={Object.values(each)}/>
-                      <span className=""><i></i>{Object.keys(each)}</span>
-                  </label>
-                )}
-              </div>
-              <button
-                className="customButton"
-                onClick={onStationSubmit}
-                type="button"
-              >
-                Request New Data
-              </button>
-            </form>
-
-
-            <form className="customForm" onSubmit={onFetchData}>
+            <form className="customForm zIndexFront" onSubmit={onFetchData}>
 
               <div className="customInteract">
                 <button className="customButton" onClick={onPause} >
                   Pause
                 </button>
-                <button className="customButton" type="submit">
-                  Sample Swell
+                <button className="customButton" value="1" onClick={onLineCount}>
+                  Less Lines
                 </button>
+                <button className="customButton" value="-1" onClick={onLineCount}>
+                  More Lines
+                </button>
+
               </div>
+              <button className="customButton" type="submit">
+                Sample Swell
+              </button>
 
               {/*
                 sample and america data
                 <button onClick={onPostData} type="button">Post to US</button>
                 */}
             </form>
-            <MemoizedTable
-              waveDataState={waveDataState}
-            />
-            <div style={mySketchAbsolute} >
-              <MemoizedP5Wrapper
-                pauseState={pauseState}
-                waveData={waveDataState}
-                sketch={Sketch}
-               />
-            </div>
+
+            <br />
+            {waveDataState !== '' ? (
+              <>
+              <MemoizedTable
+                className="zIndexFront"
+                waveDataState={waveDataState}
+              />
+              <div className="mySketchAbsolute"
+              >
+                <MemoizedP5Wrapper
+                  lineCount={lineCount}
+                  pauseState={pauseState}
+                  waveData={waveDataState}
+                  sketch={Sketch}
+                 />
+              </div>
+              </>
+            ): (<div>Loading</div>) }
+
         </div>
     )
 }
@@ -281,4 +385,15 @@ let stations3 = [
 ]
 
 
-export default SketchWrapper;
+
+function mapStateToProps(state) {
+  // console.log(state, 'from reducer')
+  const { waveData } = state.waveData;
+
+  return {
+    waveData: waveData
+  };
+}
+
+
+export default connect(mapStateToProps)(SketchWrapper);

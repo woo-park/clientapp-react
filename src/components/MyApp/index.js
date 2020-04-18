@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import * as api from '../../api'
 
 class MyApp extends Component {
 
@@ -28,6 +29,7 @@ class MyApp extends Component {
         }
       });
 
+    /*
     axios.get('/api/auth')
       .then(res => {
         console.log(res.data, 'auth res.data')
@@ -40,6 +42,18 @@ class MyApp extends Component {
           this.props.history.push("/login");
         }
       });
+    */
+
+    api.getUserAuthorized().then(res => {
+      this.setState({username: res.username})
+    }).catch((error) => {
+      //need to double check this but how?
+      console.warn(error)
+      if(error.response.status === 401) {
+        this.props.history.push("/login");
+      }
+    })
+
 
     axios.get('/api/animalsDB')
       .then(res => {
@@ -52,6 +66,7 @@ class MyApp extends Component {
           this.props.history.push("/login");
         }
       });
+
 
 
 //be moved later
@@ -75,16 +90,23 @@ class MyApp extends Component {
       ]
     )
   }
+  onVideo = (e) => {
+    e.target.play()
+  }
 
   logout = () => {
     localStorage.removeItem('jwtToken');
     window.location.reload();
   }
 
+
+
   render() {
     return (
-      <div className="container">
-
+      <div className="container home">
+        <video onClick={this.onVideo} muted autoplay loop id="myVideo">
+          <source src="assets/videos/waveShore720.mov" ></source>
+        </video>
         <div className="panel panel-default">
 
           <div className="panel-heading">
@@ -92,7 +114,7 @@ class MyApp extends Component {
             <h3 className="panel-title">
               BOOK CATALOG &nbsp;
               {localStorage.getItem('jwtToken') &&
-                <button class="btn btn-primary" onClick={this.logout}>Logout</button>
+                <button className="btn btn-primary" onClick={this.logout}>Logout</button>
               }
             </h3>
           </div>

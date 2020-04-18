@@ -32,8 +32,9 @@ code {
   --bgGrey:#8CADA7;
   --bgGreyWhite:#f7f6f8;
   --bgBlack:#222222;
+  --bgDarkMode: #312c32;
   --footerHeight:200px;
-  --headerHeight:250px;
+  --headerHeight:200px;
   --marginLeft:50px;
 }
 
@@ -47,6 +48,7 @@ code {
   box-sizing: border-box;
 }
 
+
 a {
   text-decoration: none;
   color: inherit;
@@ -58,8 +60,10 @@ a:hover {
 .container {
   display: flex;
   flex-direction: column;
-  height:100%;
+  /* height:100%; */
+  min-height: 100vh;
   width:100%;
+  background-color: var(--bgDarkMode);
 }
 
 .header{
@@ -68,9 +72,9 @@ a:hover {
 
 html, body {
   width: 100%;
-  height: 100vh;
-  /* overflow:hidden; */
-  background-color: var(--bgGreyWhite)
+  height: 100%;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
 }
 
 .navigation-list:hover {
@@ -99,6 +103,8 @@ html, body {
 .main{
   min-height:calc(100vh - var(--footerHeight) - var(--headerHeight));
   padding-top:5rem;
+  position: relative;
+  /* background-color: var(--bgDarkMode); */
 }
 
 .portrait{
@@ -239,7 +245,7 @@ input[type=button], input[type=submit] {
     flex-direction: column;
     height:100%;
     width: auto;
-    /* background-color: green; */
+    background-color: pink;
   }
 
   .headerLogo{
@@ -258,6 +264,9 @@ input[type=button], input[type=submit] {
     /* position the text, left center right or give width to play */
   }
 
+  .waveSketch {
+    padding:0px !important;
+  }
 
   .container{
     height:100%;
@@ -267,6 +276,7 @@ input[type=button], input[type=submit] {
   .main{
     height:100%;
     width:100%;
+
   }
 
   /* .main div{
@@ -292,6 +302,18 @@ input[type=button], input[type=submit] {
   .component{
     padding:10px;
   }
+  .contactPortrait{
+
+    /* mix-blend-mode: multiply; */
+    height:100%;
+    width:100%;
+  }
+  .contactSections{
+    padding:10px;
+  }
+  .about_sections{
+    padding: 1.3rem;
+  }
   /* .aboutComponent{
     width:100%;
     padding: 10px;
@@ -309,9 +331,11 @@ input[type=button], input[type=submit] {
     flex-direction: column;
     justify-content:space-between;
     background-color: pink;
+    height: 100%;
   }
 
   .container {
+
     height:auto;
     /* border:1px solid grey; */
     /* background-color:blue; */
@@ -321,7 +345,7 @@ input[type=button], input[type=submit] {
     justify-items: start;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: var(--headerHeight) 1fr var(--footerHeight);
+    grid-template-rows: calc(var(--headerHeight) + 150px) 1fr var(--footerHeight);
     grid-template-areas:
       "header header header header header header"
       ". main main main main sidebar"
@@ -395,13 +419,14 @@ input[type=button], input[type=submit] {
   }
   .contactPortrait{
 
-    mix-blend-mode: multiply;
-    width: 100%;
+    /* mix-blend-mode: multiply; */
+    height:100%;
+    width:100%;
   }
   .about_sections{
     width: 100%;
     padding: 30px;
-    background-color: green;
+    /* background-color: green; */
   }
 
 }
@@ -413,7 +438,8 @@ input[type=button], input[type=submit] {
     flex-direction: row;
     justify-content: space-between;
     /* background-color: aqua; */
-    background-image: url('./images/sample2.jpeg');
+    /* background-image: url('./images/sample2.jpeg'); */
+    background-image:linear-gradient(135deg, #98dafc 0%, var(--bgDarkMode) 60%, var(--bgWhite) 100%);
     background-position: left;
   }
   .portfolioLogo{
@@ -422,6 +448,7 @@ input[type=button], input[type=submit] {
   /* .headerMenu{
     margin-right:3rem;
   } */
+
 
   .container {
     height:auto;
@@ -475,7 +502,11 @@ input[type=button], input[type=submit] {
     text-decoration: line-through;
   }
   .navigation-list section::before{
-    content:'\1F3A8 \a0'
+    /* content:'\1F3A8 \a0' */
+    content:'\1F30A'
+    /* Formal Unicode Notation
+      https://www.iemoji.com/view/emoji/190/animals-nature/water-wave
+     */
   }
 
   .navigation-list{
@@ -506,7 +537,7 @@ input[type=button], input[type=submit] {
   .about_sections{
     width: 50%;
     padding: 30px;
-    background-color: green;
+    background-image:linear-gradient(90deg, #98dafc 0%, var(--bgDarkMode) 120%);
   }
 
   .contactSections{
@@ -515,14 +546,16 @@ input[type=button], input[type=submit] {
     align-items: center;
     flex-direction: column;
     width: 50%;
+    background-image:linear-gradient(90deg, var(--bgDarkMode) 30%, #98dafc 50%, var(--bgDarkMode) 70%);
     /* background-color: green; */
   }
 
   .contactPortrait{
     /* position: absolute; */
     /* top:0; */
-    mix-blend-mode: multiply;
-    width: 100%;
+    /* mix-blend-mode: multiply; */
+    height:100%;
+    width:100%;
   }
 
 
@@ -530,9 +563,37 @@ input[type=button], input[type=submit] {
 
 /* for all - sketch */
 
+.mySketchAbsolute{
+
+}
+
+
+#defaultCanvas0{
+  width:100% !important;
+  height:100% !important;
+  /* background-color:coral; */
+
+
+  pointer-events: none;
+  position: absolute;
+  top: -6px;
+  left: 0px;
+}
+
 .waveSketch {
-  padding: 30px;
+
+  /* padding: 30px; */
   background-image: linear-gradient(135deg, #619cfa 0%, #f5f7fa 100%);
+  /* width:auto; */
+  /* background color overlaying */
+  /* height:100%; */
+
+  /* background-color:orange; */
+  padding: 1rem;
+  border:3px solid var(--bgBlack);
+  position: relative;
+  /* covers the 1st line screw up */
+  overflow:hidden;
 }
 .dataCell:hover {
   color:var(--bgYellow);
@@ -541,16 +602,26 @@ input[type=button], input[type=submit] {
   background-color:var(--bgGrey);
 }
 .dataTable {
+    /* padding:1rem; */
   /* background-image:url("back9.jpg"); */
   background-color:var(--bgGreyWhite);
   background-size: cover;
-  transition: all 1s;
+  /* transition: all 1s; */
       border-radius: 5px;
 
-      mix-blend-mode: soft-light;
+      mix-blend-mode:luminosity;
       /* border: 3px solid #222222; */
-      box-shadow: 10px 10px 5px black;
+      box-shadow: 10px 5px 10px 5px black;
+      font-size:0.9rem;
+      min-width:375px;
+      width:30%;
+      position: relative;
+      /* transition: all 0.5s linear; */
+      z-index: 1;
 }
+
+/* bc sketch is drawn at z index 0 */
+
 
 #close_sign > span{
       display:block;
@@ -614,8 +685,6 @@ input[type=button], input[type=submit] {
   box-shadow: 10px 10px 5px black;
   opacity: 0;
 
-  border: 0.3em solid #3694d7;
-  border-color: #3694d7 transparent transparent transparent;
   -moz-transition: all 0.7s linear;
   -o-transition: all 0.7s linear;
   -webkit-transition: all 0.7s linear;
@@ -637,12 +706,18 @@ input[type=button], input[type=submit] {
 
 /*  */
 .customForm{
-  min-width: 375px;
+  min-width:375px;
   width:30%;
   border-radius: 5px;
   box-shadow: 10px 10px 5px black;
   position: relative;
+  z-index: 1;
   /* mix-blend-mode: soft-light; */
+}
+
+.zIndexFront{
+  z-index: 1;
+  position: relative;
 }
 
 .custom-select-box{
@@ -664,6 +739,7 @@ input[type=button], input[type=submit] {
 
 .placeHolder{
   width:100%;
+  /* 98dafc or this */
   background-color: #0563af;
   color: white;
   padding: 12px;
@@ -705,10 +781,10 @@ input[type=button], input[type=submit] {
 
 @keyframes bounce {
   from {
-     transform: translateY(-5%)
+     transform: translateY(-5px)
    }
    to {
-     transform: translateY(5%)
+     transform: translateY(5px)
    }
 }
 
@@ -771,9 +847,22 @@ option:hover:before{
   /* display: none; /*hide original SELECT element: */
 }
 
+.confirm{
+  background-color: coral;
+}
 
+.home{
+  /* background-image: url('./assets/videos/waveShore720.mov'); */
+}
 
+.panel{
+  border: 1px solid black;
+}
 
+#myVideo {
+  min-width: 100%;
+  /* min-height: 100%; */
+}
 /*
 
 // Start | for demo
