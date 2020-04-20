@@ -20,6 +20,7 @@ function Sketch(p) {
   let myymin = 0
   //sound
   // let mySound
+  let wavePlayState = 1 // by default
 
   var start = new Date().getTime(),
   startMin = new Date().getMinutes(),
@@ -149,7 +150,9 @@ function Sketch(p) {
     } else if (props.lineCount < 0){
       lineCount -= 1
     }
-
+    if(props.wavePlayState) {
+      wavePlayState = props.wavePlayState
+    }
     if(props.waveData) {
       // console.log(props.waveData)
 
@@ -700,15 +703,26 @@ function Sketch(p) {
       // wave.setCurrentHour(hourly_counter)
 
       if(pauseState) {
-        shiftRight()
-        wave2.addNoise();
-        wave2.setCurrentHour(hourly_counter)
-        wave2.setPerspective()
-        wave2.amplitude_change()
-
+        if(wavePlayState == 1){
+          shiftRight()
+          wave2.addNoise();
+          wave2.setCurrentHour(hourly_counter)
+          wave2.setPerspective()
+          wave2.amplitude_change()
+        } else if (wavePlayState == 2) {
+          shiftUp()
+          wave.addNoise()
+          wave.setCurrentHour(hourly_counter)
+          wave.amplitude_change()
+        }
       }
-      wave2.displayLines()
-      console.log(wave2.currentHour, 'wave2 current hour', wave2.waveHeightArr, wave2.waveHeight)
+      if(wavePlayState == 1) {
+        wave2.displayLines()
+      } else if(wavePlayState == 2) {
+        wave.displayLines()
+      }
+
+      // console.log(wave2.currentHour, 'wave2 current hour', wave2.waveHeightArr, wave2.waveHeight)
         //for wave2 -> its prolly better to do with framecount % 2 == 0
     }
 

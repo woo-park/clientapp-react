@@ -52,6 +52,10 @@ function App(props) {
     });
   })
 
+  const onVideo = (e) => {
+    e.target.play()
+  }
+
   return (
     <BrowserRouter>
     {/* <Switch> doesn't work */}
@@ -76,7 +80,11 @@ function App(props) {
 
           <div className="item-c side middle">
             {mobile == true ? <div className="message">mobile!</div> : ''}
+            <video onClick={onVideo} muted autoPlay loop className="myVideo">
+              {/*<source src="assets/videos/waveShore720.mov" ></source>*/}
+              <source src="assets/videos/waveBlackOut.mp4" ></source>
 
+            </video>
           </div>
 
           <div className="item-b main middle">

@@ -95,6 +95,7 @@ html, body {
 /* ensures that page is allways full */
 .footer{
   height: var(--footerHeight);
+  /* opacity: 1; */
 }
 .header{
   height: var(--headerHeight);
@@ -601,7 +602,8 @@ input[type=button], input[type=submit] {
 .dataBlock:hover {
   background-color:var(--bgGrey);
 }
-.dataTable {
+.chart {
+  transition: all 1s linear;
     /* padding:1rem; */
   /* background-image:url("back9.jpg"); */
   background-color:var(--bgGreyWhite);
@@ -619,37 +621,62 @@ input[type=button], input[type=submit] {
       /* transition: all 0.5s linear; */
       z-index: 1;
 }
+.dataTable {
+  border-top:1px solid silver;
+  width:100%;
+}
 
 /* bc sketch is drawn at z index 0 */
 
 
-#close_sign > span{
-      display:block;
-      transform: rotate(-45deg);
-    }
 
-    #close_sign{
-      cursor:pointer;
-      font-size:16px;
-      font-weight: bold;
+.closed{
+  /* transform-origin: 50% 50%; */
+  transform:rotate(0deg);
 
-      /* margin:0 auto; */
-      display:flex;
-      /* width:1em; */
-      justify-content: center;
-      align-items: center;
+  /* font-size: 300px; */
+  right:1px;
+  top:1px;
+}
 
-      /* border:1px solid black; */
-      /* border: solid; */
-      border-radius: 5px;
-      background: none;
-      color:black;
-      margin-left:300px;
-      /* background-color:black; */
-      width: 30px;
-      height:30px;
-    }
+.offScreen{
+  transform:  translateX(-97%);
+  /* scale(0.5, 0.5) */
+  /* background-color: blue; */
+}
 
+.shown{
+  /* transform-origin: 50% 50%; */
+  transform: rotate(-45deg);
+  font-size:16px;
+  right:1px;
+  top:1px;
+
+}
+
+.closeBtn{
+
+  transition: all 2s ease-in-out;
+  cursor:pointer;
+  position: absolute;
+
+
+  font-weight: bold;
+  width:30px;
+  height: 30px;
+  /* border:1px solid silver; */
+  text-align: center;
+  vertical-align: center;
+  border-radius: 5px;
+}
+
+.closeBtn:hover {
+  color:silver;
+}
+
+.chart h3{
+  text-align: center;
+}
 
 /* @keyframes HideList {
   from {
@@ -712,7 +739,8 @@ input[type=button], input[type=submit] {
   box-shadow: 10px 10px 5px black;
   position: relative;
   z-index: 1;
-  /* mix-blend-mode: soft-light; */
+  /* mix-blend-mode: hard-light; */
+  transition: all 1s linear;
 }
 
 .zIndexFront{
@@ -748,6 +776,7 @@ input[type=button], input[type=submit] {
   font-size: 14px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
   cursor:pointer;
+  position: relative;
 }
 
 .placeHolder::after {
@@ -768,6 +797,13 @@ input[type=button], input[type=submit] {
   animation: bounce 0.5s infinite alternate;
 }
 
+.customFormHeader{
+  background-color: #0563af;
+  color: white;
+  padding: 12px;
+
+}
+
 .customButton{
   width:100%;
   background-color: #0563af;
@@ -776,7 +812,7 @@ input[type=button], input[type=submit] {
   border: none;
   font-size: 14px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  cursor:pointer;
+  cursor: pointer;
 }
 
 @keyframes bounce {
@@ -852,16 +888,37 @@ option:hover:before{
 }
 
 .home{
+  /* position: relative; */
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
   /* background-image: url('./assets/videos/waveShore720.mov'); */
 }
 
 .panel{
-  border: 1px solid black;
+  border: 1px solid var(--bgWhite);
+  padding: 5rem;
+  position: relative;
 }
 
-#myVideo {
-  min-width: 100%;
+.myVideo {
+  /* min-width: 100%; */
+  object-fit: cover;
+  min-width:100%;
+  min-height:100%;
+  position: absolute;
+  right: 0;
+  /* top:var(--headerHeight); */
+  top:0;
+  /* bot: 0; */
+  opacity: 0.3;
+  pointer-events: none;
+
+
   /* min-height: 100%; */
+  /* width: 100%    !important;
+   height: auto   !important; */
 }
 /*
 

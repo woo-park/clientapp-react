@@ -7,7 +7,7 @@ import Sketch from './Sketch'
 import Table from './../../Table'
 import FetchForm from './../../FetchForm'
 import { connect } from 'react-redux';
-
+import Close from './../../Close'
 
 import {
   fetchWaveData,
@@ -24,6 +24,7 @@ const MemoizedTable = React.memo(Table)
 
 
 function SketchWrapper(props, action) {
+    const [wavePlayState, setWavePlayState] = useState(2)
     const initialStationIndex = 2
     const [waveDataState, setWaveDataState] = useState('');
     const [stationState, setStationState] = useState(Object.values(stations[initialStationIndex])[0]);
@@ -207,12 +208,35 @@ function SketchWrapper(props, action) {
         }
         myTimeoutFunction()
     }
+    const onWavePlayState = (e) => {
+      e.preventDefault()
+      setWavePlayState(e.target.value)
+      setPauseState(true)
 
+    }
 
     return (
         <div >
-            <h1>Seek Your Wave</h1>
-            <h2>{words}</h2>
+            <div className="customForm">
+              <Close />
+              <div className="customFormHeader">
+                <h1>Seek Your Wave</h1>
+                <span>{words}</span>
+              </div>
+
+
+              <FetchForm
+                stations={stations}
+                stations2={stations2}
+                stations3={stations3}
+                onHandleChange={onHandleChange}
+                onStationSubmit={onStationSubmit}
+                onPlaceHolder={onPlaceHolder}
+                placeHolder={placeHolder}
+                inputEl={inputEl}
+              />
+            </div>
+
 
             {/*
               <form className="customForm">
@@ -250,16 +274,7 @@ function SketchWrapper(props, action) {
                 </div>
               </form>
               */}
-            <FetchForm
-              stations={stations}
-              stations2={stations2}
-              stations3={stations3}
-              onHandleChange={onHandleChange}
-              onStationSubmit={onStationSubmit}
-              onPlaceHolder={onPlaceHolder}
-              placeHolder={placeHolder}
-              inputEl={inputEl}
-            />
+
 
             {/*
               <form className="customForm">
@@ -298,12 +313,12 @@ function SketchWrapper(props, action) {
               </form>
               */}
 
-
+            <br/>
             <form className="customForm zIndexFront" onSubmit={onFetchData}>
-
+              <Close />
               <div className="customInteract">
                 <button className="customButton" onClick={onPause} >
-                  Pause
+                  {pauseState === true ? "Pause" : "Play"}
                 </button>
                 <button className="customButton" value="1" onClick={onLineCount}>
                   Less Lines
@@ -313,9 +328,18 @@ function SketchWrapper(props, action) {
                 </button>
 
               </div>
+              <div className="customInteract">
+                <button className="customButton" value="1" onClick={onWavePlayState}>
+                  Left Point Break
+                </button>
+                <button className="customButton" value="2" onClick={onWavePlayState}>
+                  On Shore
+                </button>
+              </div>
               <button className="customButton" type="submit">
                 Sample Swell
               </button>
+
 
               {/*
                 sample and america data
@@ -333,6 +357,7 @@ function SketchWrapper(props, action) {
               <div className="mySketchAbsolute"
               >
                 <MemoizedP5Wrapper
+                  wavePlayState={wavePlayState}
                   lineCount={lineCount}
                   pauseState={pauseState}
                   waveData={waveDataState}

@@ -90,9 +90,7 @@ class MyApp extends Component {
       ]
     )
   }
-  onVideo = (e) => {
-    e.target.play()
-  }
+
 
   logout = () => {
     localStorage.removeItem('jwtToken');
@@ -103,11 +101,10 @@ class MyApp extends Component {
 
   render() {
     return (
-      <div className="container home">
-        <video onClick={this.onVideo} muted autoplay loop id="myVideo">
-          <source src="assets/videos/waveShore720.mov" ></source>
-        </video>
+      <div className="home">
+
         <div className="panel panel-default">
+
 
           <div className="panel-heading">
           <h1>Welcome {this.state.username}</h1>

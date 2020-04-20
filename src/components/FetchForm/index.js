@@ -1,9 +1,12 @@
 import React from 'react'
 
+
 function FetchForm({stations, stations2, stations3, onHandleChange, onStationSubmit, onPlaceHolder, placeHolder, inputEl}) {
 
   return (
-      <form className="customForm">
+      <form className="">
+        {/*<Close />*/}
+
         <div onClick={onPlaceHolder} className="placeHolder" >{placeHolder}</div>
 
         <div ref={inputEl} className="customSelectOption">
@@ -30,7 +33,6 @@ function FetchForm({stations, stations2, stations3, onHandleChange, onStationSub
         </div>
         <button
           className="customButton"
-
           onClick={(e)=>{onStationSubmit(e); inputEl.current.classList.remove('add')}}
           type="button"
         >

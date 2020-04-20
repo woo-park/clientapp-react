@@ -4,10 +4,13 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import * as api from '../../api'
 import FetchForm from '../FetchForm'
+import Close from '../Close'
+
 
 function Table(props) {
   const current = new Date()
   const [currentHour, setCurrentHour] = useState(current.getHours())
+  const [currentDate, setCurrentDate] = useState(current.getDate())
   const [time, setTime] = useState(current.toLocaleTimeString());
   // const secondsPassed = useRef(0);
 
@@ -36,6 +39,7 @@ function Table(props) {
       const date = new Date()
       // secondsPassed.current = secondsPassed.current + 1;
       setTime(date.toLocaleTimeString());
+      // setCurrentDate(date.getDate())   //unneccesary prolly
       setCurrentHour(date.getHours())
     }, 1000);
 
@@ -100,8 +104,11 @@ function Table(props) {
     // console.log(time)
   }
 
+
+
+
   return (
-    <div id = "chart">
+    <div className="chart">
         {/*
           <form className="customForm">
             <div className="custom-select-box">
@@ -139,7 +146,7 @@ function Table(props) {
           </form>
 
           */}
-
+          <Close />
           <h3 onClick={onAddTime}>{time}</h3>
           <table className="dataTable">
               <thead>
@@ -154,7 +161,7 @@ function Table(props) {
               </thead>
               <tbody className="">
                 {waveState.length > 0 ? waveState.slice(1,25).map((each, index) =>
-                <tr key={index} className="dataBlock" className={currentHour == each[4] ? "dataBlock confirm" : "dataBlock"}>
+                <tr key={index} className="dataBlock" className={currentHour == each[4] && each[3] == currentDate ? "dataBlock confirm" : "dataBlock"}>
                   <th className="dataCell">{each[3]}</th>
                   <th className="dataCell">{each[4]}:00{ each[4] < 12? 'am':'pm'}</th>
                   <th className="dataCell">{each[0]}</th>
@@ -168,9 +175,11 @@ function Table(props) {
                 </tr>
               </tbody>
           </table>
+
     </div>
   )
 }
+
 
 
 let stations = [
