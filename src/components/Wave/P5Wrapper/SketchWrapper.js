@@ -148,11 +148,15 @@ function SketchWrapper(props, action) {
     },[])
 
     useEffect(()=>{   // update waveDataState after store is updated
-      if(typeof props.waveData !== 'undefined') {
+      if(typeof props.waveData !== 'undefined' && props.waveData.length > 200) {
+        // let newWaveState = convertCsv(props.waveData)
+        // if(newWaveState !== false) {
+        //   setWaveDataState(newWaveState)
+        // }
         console.log(props.waveData,'posted and new data?-check')
         setWaveDataState(convertCsv(props.waveData))
       } else {
-
+        console.log(props.waveData,'props.waveData.length less than 200 word counts')
       }
 
 

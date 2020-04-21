@@ -159,10 +159,17 @@ function Sketch(p) {
 
       let waveDataState = props.waveData
       if(waveDataState !== '' || typeof waveDataState !== 'undefined') {
+
         waveDataState = parseData(waveDataState)
-        plotOutColumn(waveDataState)
-        // console.log(waveDataState,'waveDataState')
-        console.log('new data plotted')
+        if(typeof waveDataState !== 'undefined') {    //guard
+
+          plotOutColumn(waveDataState)
+          // console.log(waveDataState,'waveDataState')
+          console.log('new data plotted')
+        } else {
+          console.log('props.waveData -> in sketch is undefined, should be getting matrix arr')
+        }
+
       }
     }
   } // end of myCustomRedrawAccordingToNewPropsHandler
