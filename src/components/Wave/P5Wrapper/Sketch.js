@@ -249,7 +249,7 @@ function Sketch(p) {
 
     // sampleData
 
-    p.loadTable('http://localhost:3002/api/waveDB/sample', (sampleTable) => {
+    p.loadTable('/api/waveDB/sample', (sampleTable) => {
       // console.log(sampleTable.rows)
       // sampleData = [...sampleTable.rows]
       // console.log('preload initial sample request')
