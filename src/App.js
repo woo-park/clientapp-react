@@ -12,6 +12,7 @@ import Wave from './components/Wave';
 import Contact from './components/Contact';
 import Individual from './components/Individual';
 import FindEmoji from './components/FindEmoji';
+import Posts from './components/Posts';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import initData from './initData.js';
@@ -75,6 +76,9 @@ function App(props) {
             <Link className="headerMenu navigation-list" to="/findEmoji">
               Find Emoji
             </Link>
+            <Link className="headerMenu navigation-list" to="/posts">
+              Blog Posts
+            </Link>
             <Navigation className=""/>
           </div>
 
@@ -100,7 +104,7 @@ function App(props) {
             <Route exact path="/findEmoji" component={FindEmoji} />
             <Route exact path="/table" component={Table} />
 
-
+            <Route exact path="/posts" component={Posts} />
             {/*  {initData.map(each =>
                 each.sideImage.map(item => {
                     let pathh = Object.keys(item)[0]

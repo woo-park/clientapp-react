@@ -65,13 +65,14 @@ const Navigation = (props) => {
           >Contact</span>
         </section>
       </Link>
-      <Link className="navigation-list" to="/motive">
+      {/*<Link className="navigation-list" to="/motive">
         <section className="">
           <span className=""
                 onClick={onNavClick}
           >Motive</span>
         </section>
-      </Link>
+      </Link>*/}
+
       <Link className="navigation-list" to="/wave">
         <section className="">
           <span className=""

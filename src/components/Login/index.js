@@ -5,6 +5,13 @@ import { Link } from 'react-router-dom';
 import './Login.css';
 import * as api from '../../api'
 
+import { connect } from 'react-redux';
+
+
+import {
+  userLoggedIn,
+} from '../../actions';
+
 class Login extends Component {
 
   constructor() {
@@ -43,15 +50,17 @@ class Login extends Component {
     api.login({username, password})
     .then((res) => {
       // console.log(res) // token
+      // console.log(res.userName, res.userID,'check here')
       // console.log(localStorage.getItem('jwtToken'),'localstorage check')
       this.setState({ message: '' });
       this.props.history.push('/')
+      this.props.dispatch(userLoggedIn(res.userName, res.userID))
     })
     .catch((error) => {
       if(error.response.status === 401) {
         this.setState({ message: 'Login failed. Username or password not match' });
       }
-    });
+    })
   }
 
   render() {
@@ -79,4 +88,17 @@ class Login extends Component {
   }
 }
 
-export default Login;
+// export default Login;
+
+
+
+function mapStateToProps(state) {
+  const { userName } = state.userNameData
+  return {
+    ...state,
+    userName: userName
+  };
+}
+
+
+export default connect(mapStateToProps)(Login);

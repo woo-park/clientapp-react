@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import * as api from '../../api'
+import { connect } from 'react-redux';
+import {
+  userLoggedIn,
+} from '../../actions';
 
 class MyApp extends Component {
 
@@ -46,6 +50,7 @@ class MyApp extends Component {
 
     api.getUserAuthorized().then(res => {
       this.setState({username: res.username})
+      this.props.dispatch(userLoggedIn(res.username, res.userID))
     }).catch((error) => {
       //need to double check this but how?
       console.warn(error)
@@ -141,4 +146,19 @@ class MyApp extends Component {
   }
 }
 
-export default MyApp;
+// export default MyApp;
+
+
+
+function mapStateToProps(state) {
+  // const { posts } = state.postsData
+  // const { comments } = state.commentsData
+  // console.log(state,'mapStateToProps')
+  return {
+    // posts: posts,
+    // comments: comments,
+  }
+}
+
+
+export default connect(mapStateToProps)(MyApp);

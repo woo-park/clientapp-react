@@ -259,6 +259,7 @@ input[type=button], input[type=submit] {
     display: flex;
     flex-direction: column;
     width:auto;
+
   }
   .navigation-list{
     text-align: center;
@@ -584,7 +585,9 @@ input[type=button], input[type=submit] {
 .waveSketch {
 
   /* padding: 30px; */
-  background-image: linear-gradient(135deg, #619cfa 0%, #f5f7fa 100%);
+  /* background-image: linear-gradient(135deg, #619cfa 0%, #f5f7fa 100%); */
+  background-image: linear-gradient(45deg, rgba(103,92,249,1) 12%, rgba(213,123,46,1) 79%);
+  /* background-image: linear-gradient(45deg, rgba(142,64,255,0.9598214285714286) 12%, rgba(255,201,57,1) 79%); */
   /* width:auto; */
   /* background color overlaying */
   /* height:100%; */
@@ -927,3 +930,113 @@ option:hover:before{
 @import 'https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.3.2/css/simple-line-icons.min.css';
 @import 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css';
 @import 'https://fonts.googleapis.com/css?family=Roboto+Mono:300,700'; */
+
+
+.PostsWrapper{
+  border:1px solid black;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  /* background-color: blue; */
+  width:100%;
+  /* max-height:500px; */
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.leftHand {
+
+  min-height:100%;
+  /* background-color: olive; */
+  position: relative;
+  /* min-width:400px; */
+  /* max-width: 100%; */
+  max-width: 600px;
+
+}
+
+.postImage{
+  width:100%;
+  height:100%;
+  /* object-fit:contain; */
+}
+
+/* dead center of parent container */
+.absoluteCenterContainer{
+  position: absolute;
+  top:50%;
+  left:50%;
+  width:50%;
+  height:50%;
+  margin-top:-25%;
+  margin-left: -25%;
+  /* background-color: blue; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightHand{
+  min-height:100%;
+  width:100%;
+  max-width: 600px;
+  background-color: var(--bgWhite);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightHand h1 {
+  text-align: center;
+}
+
+.rightHand h4 {
+  text-align: center;
+}
+
+.rightHand p {
+  text-align: center;
+}
+
+.absoluteCornerContainer {
+  position: absolute;
+  top:20px;
+  right:20px;
+}
+
+.commentWrapper{
+  line-height:1.5rem;
+}
+
+.commentWrapper::before{
+  content:'\21AA \a0 \a0 \a0'
+  /* hex */
+}
+.threadWrapper::before{
+  content:'\a0 \a0 \a0 \a0 \a0 \a0 \a0 \a0 \a0 \21AA \a0 \a0 \a0'
+  /* hex */
+}
+
+.commentSection{
+  margin-top: auto;
+}
+.commentsBlock{
+  border-top: 1px solid var(--bgBlack);
+  border-bottom: 1px solid var(--bgBlack);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: var(--bgGreyWhite);
+  height:200px;
+  max-height:200px;
+  overflow-y: scroll;
+  font-size: 12px;
+}
+.commentSelected {
+  background-color: ivory;
+}
+
+.errorBar{
+  background-color: var(--bgOrange);
+  text-align:center;
+  padding: 1rem;
+}

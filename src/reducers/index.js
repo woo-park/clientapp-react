@@ -29,6 +29,93 @@ const initialState = {
   areaCode: ''
 }
 
+const initialPosts = {
+  posts: []
+}
+
+// {
+//   commentsID: [
+//   ],
+//   _id: 'temp123',
+//   like: 0,
+//   description: 'Entire fresh, delicious vegan cakes are available to order!  Wholewheat, organic bread can also be bought in our cafe.',
+//   placeName: 'And 유 (Yu) Café',
+//   address: '518 Hallim-ro 한림읍 Jeju-si Jeju-do KR',
+//   placeType: 'Cafe',
+//   placeID: 'temp_place_id',
+//
+// },
+
+export function userNameData(state=initialState.userName, action) {
+  switch (action.type) {
+	  case 'RECEIVE_USERNAME': {
+      const { userName, userID } = action.payload
+
+      return {
+        userName: userName,
+        userID: userID
+      }
+    }
+    default: {
+	    return state;
+	  }
+  }
+}
+
+export function postsData(state = initialPosts, action) {
+  switch (action.type) {
+	  case 'RECEIVE_POSTS': {
+      const { posts } = action.payload
+      console.log(state.posts,'REEEE')
+      return {
+        ...state,
+        posts: posts
+      }
+    }
+    default: {
+	    return state;
+	  }
+  }
+}
+
+const initialComments = {
+  comments: {}
+}
+
+export function commentsData(state = initialComments, action) {
+  switch (action.type) {
+    case 'RECEIVE_COMMENTS': {
+      const { comments } = action.payload
+      return {
+        ...state,
+        comments: comments
+      }
+    }
+    default: {
+	    return state;
+	  }
+  }
+}
+
+const initialThreads = {
+  threads: {}
+}
+
+export function threadsData(state = initialThreads, action) {
+  switch (action.type) {
+    case 'RECEIVE_THREADS': {
+      const { threads } = action.payload
+      return {
+        ...state,
+        threads: threads
+      }
+    }
+    default: {
+	    return state;
+	  }
+  }
+}
+
 export function waveData(state = initialState, action) {
   switch (action.type) {
 	  case 'RECEIVE_ENTITIES': {
@@ -103,6 +190,8 @@ export function waveData(state = initialState, action) {
 	  }
   }
 }
+
+
 
 function getProjectByProjectId(projects, projectId) {
 
