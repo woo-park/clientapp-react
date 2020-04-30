@@ -47,7 +47,12 @@ function ThreadsMatch(props) {
       //  }
       //  return tempArr
       return(<div>
-          {newArr !== undefined ? newArr.map(thread => (<div className="threadWrapper">{thread.text}</div>)) : ''}
+          {newArr !== undefined ? newArr.map((thread, index) =>
+              (<div className="threadWrapper"
+                  key={index}>
+                {thread.text}
+                </div>)
+              ) : ''}
             </div>)
      } else {
        return null
@@ -79,9 +84,9 @@ function CommentsMatch(props) {
 
 
   return (<>
-            {matching.map(each =>
+            {matching.map((each, index) =>
               <div
-
+                key={index}
                 className={each.commentID === currentCommentID ? "commentSelected commentWrapper" : "commentWrapper" }
                 onClick={props.onCommentClick}
                 data-comment-id={each.commentID}
@@ -326,7 +331,7 @@ function PostsWrapper(props) {
 
 
         {props.post.commentsID.length > 0 ? (<div className="commentsBlock">
-            {props.post.commentsID.map(each => <div>
+            {props.post.commentsID.map((each, index) => <div key={index}>
               {<CommentsMatch
                   onCommentClick={onCommentClick}
                   comments={props.comments}
@@ -377,33 +382,54 @@ function Posts(props, action) {
 
     const postsReady = () => {
       if (typeof props.posts !== 'undefined' && props.posts.length > 0) {
-        console.log(props.posts, 'props are retreived from store')
+        console.log('postsReady return true')
         return true
+      } else {
+        props.dispatch(fetchPostsData())
+        console.log('fetchPostsData once more')
       }
-      console.log('props retreiving has failed')
+      console.warn('props.posts retreiving has failed due to it being undefined or length < 0')
       return false
     }
 
     const commentsReady = () => {
       if (typeof props.comments !== 'undefined' && props.comments.length > 0) {
+        console.log('commentsReady return true')
         return true
+      } else {
+        props.dispatch(fetchCommentsData())
+        console.log('fetchCommentsData once more')
       }
-      console.log('props retreiving has failed')
+      console.warn('props.comments retreiving has failed due to it being undefined or length < 0')
       return false
     }
 
-    useEffect(()=>{
-      console.log('we listen to props.posts')
-      if(postsReady() == true) {
-        setPosts(props.posts)
-        setComments(props.comments)
-        console.log(posts,'posts have been set')
-      }
-      // else {
-      //   props.dispatch(fetchPostsData())
-      //   props.dispatch(fetchCommentsData())
-      // }
-    },[props.posts, props.comments])
+    // useEffect(()=>{
+    //   // console.log('new props.posts & comments incoming')
+    //   // if(postsReady() == true) {
+    //   //   setPosts(props.posts)
+    //   //   console.log(posts,'new props.posts have been set')
+    //   // } else {
+    //   //   console.log(props.posts, 'props.posts is undefined || 0 length')
+    //   // }
+    //
+    //   // else {
+    //   //   props.dispatch(fetchPostsData())
+    //   //   props.dispatch(fetchCommentsData())
+    //   // }
+    // },[props.posts])
+
+    // useEffect(()=>{
+    //   console.log('new props.comments incoming')
+    //   //
+    //   // if(commentsReady() == true) {
+    //   //   setComments(props.comments)
+    //   //   console.log(comments,'new props.comments have been set')
+    //   // } else {
+    //   //   console.log(props.comments, 'props.comments is undefined || 0 length')
+    //   // }
+    //
+    // },[props.comments])
 
 
 
@@ -414,7 +440,8 @@ function Posts(props, action) {
           {/*{postsReady() ? (props.posts.map(each => <div>{each.description}</div>)) : 'Loading' }
           */}
 
-          {postsReady() && commentsReady() ? (props.posts.map(each => <PostsWrapper
+          {postsReady() && commentsReady() ? (props.posts.map((each, index) => <PostsWrapper
+            key={index}
             post={each}
             comments={props.comments}
             dispatch={props.dispatch}
