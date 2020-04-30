@@ -2,11 +2,11 @@ import axios from 'axios';
 
 
 // const API_BASE_URL = 'https://wooyongpark.com';
-const API_BASE_URL = 'http://localhost:3002' //for dev mode
+// const API_BASE_URL = 'http://localhost:3002' //for dev mode
 
 // const API_BASE_URL = 'http://128.199.93.14:3002'   //before nginx - top level server listens to 3002 portal
 
-// const API_BASE_URL = 'http://128.199.93.14'   // without the 3002 because nginx reverse proxy
+const API_BASE_URL = 'http://128.199.93.14'   // without the 3002 because nginx reverse proxy
 // but remember to npm run build &then pm2 restart server.js
 
 
