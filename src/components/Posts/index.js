@@ -312,6 +312,17 @@ function PostsWrapper(props) {
     // post to commentDB -> if ids match,
   }
 
+  const commentsReady = () => {
+    if (typeof props.comments !== 'undefined' && props.comments.length > 0) {
+      console.log('commentsReady return true')
+      return true
+    } else {
+      props.dispatch(fetchCommentsData())
+      console.log('fetchCommentsData once more')
+    }
+    console.warn('props.comments retreiving has failed due to it being undefined or length < 0')
+    return false
+  }
 
   return(
     <div className="PostsWrapper">
@@ -330,7 +341,7 @@ function PostsWrapper(props) {
         <p>{props.post.description}</p>
 
 
-        {props.post.commentsID.length > 0 ? (<div className="commentsBlock">
+        {props.post.commentsID.length > 0 && commentsReady() ? (<div className="commentsBlock">
             {props.post.commentsID.map((each, index) => <div key={index}>
               {<CommentsMatch
                   onCommentClick={onCommentClick}
@@ -440,7 +451,7 @@ function Posts(props, action) {
           {/*{postsReady() ? (props.posts.map(each => <div>{each.description}</div>)) : 'Loading' }
           */}
 
-          {postsReady() && commentsReady() ? (props.posts.map((each, index) => <PostsWrapper
+          {postsReady() ? (props.posts.map((each, index) => <PostsWrapper
             key={index}
             post={each}
             comments={props.comments}
