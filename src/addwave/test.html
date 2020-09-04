@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+
+    <div id="container"></div>
+
+    <script src="./p5/p5.min.js"></script>
+
+    <script>
+        /*
+        1. need to make lines seperate
+        2. instance mode
+        3. go back to sketch.js -> instance mode -> start fresh here
+        */
+
+
+        // data
+        let sampleData = []
+        let tide = [];
+        let swellSize = [];
+        let swellPeriods = [];
+
+        //timer
+        let hourly_counter = 0
+        let mySec = 0
+        let myMin = 0
+        let webGameTime = 6
+        let am_or_pm
+
+        //sound
+        let mySound
+
+        function myClock(p) {
+        if (p.frameCount % 60 == 0) {
+            mySec += 1
+        }
+
+        myMin = Math.floor(mySec / webGameTime) //!important - defines 1hr
+        hourly_counter = myMin % 24
+        am_or_pm = hourly_counter == 23 || hourly_counter < 12? 'am' : 'pm';
+
+        }
+
+
+        // wave2
+        let linesY1 = []
+        let linesY2 = []
+        let wave2
+        let angleIncre = 0
+        let temp_noise = 0.005
+        let wave2Angle = 0
+
+        for(let k = 0; k < window.innerWidth - 300; k ++) {
+            linesY1.push(null)
+            linesY2.push(null)
+        }
+
+        function shiftRight() {
+            for(let i = linesY1.length - 1; i > 0; i -= 1) {
+                linesY1[i] = linesY1[i-1];
+                linesY2[i] = linesY2[i-1];
+            }
+        }
+
+
+        let counter = 1
+        let myFrameCount = 2
+
+        function parseData(p, arr) {
+        // looping 2-dimensional arr -> normalize, rows bc loadTable
+        return arr.rows.map((each, index) => {
+            if (index != 0) {
+            return each.arr.map((item, i) => {
+                if (i == 0) {
+                return p.map(item, 0, 1.7, -0.4, 0.4).toFixed(2)
+                } else if (i == 1) {
+                return p.map(item, 0, 12, 10, 400).toFixed(0)
+                } else if (i == 2) {
+                return p.map(item, 3, 15, 1, 1000 ).toFixed(0)
+                }
+            })
+            }
+            return each.arr
+        })
+        }
+
+        let sketch = function(p) {
+                p.preload = function() {
+                  // sampleData
+                //   p.loadTable('./sample2.csv', (sampleTable) => {
+                //     console.log(sampleTable.rows)
+
+                //     // sampleData = [...sampleTable.rows]
+                //     sampleData = parseData(p, sampleTable)
+                //     console.table(sampleData,'sample Data')
+                    sampleData = [
+                        [1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4],
+                        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7],
+                        [7, 8, 7, 8, 7, 8, 10, 5, 5, 6, 7, 8, 6, 6, 6, 6, 6, 10, 9 ,8, 6, 6, 6, 6, 6]
+                    ]
+
+
+                    // sampleData = [
+                    //     // [offset, height, time],
+                    //     [1.4, 12, 12],
+                    //     [1.2, 12, 12],
+                    //     [1.0, 12, 12],
+                    //     [0.8, 12, 11],
+                    //     [0.6, 12, 10],
+                    //     [0.4, 12, 10],
+                    //     [0.2, 12, 11],
+                    //     [0.4, 12, 11],
+                    //     [0.6, 12, 11],
+                    //     [0.8, 12, 11],
+                    //     [1.0, 12, 11],
+                    //     [1.2, 12, 11],
+                    //     [1.4, 12, 10],
+                    //     [1.2, 12, 10]
+                    //     [1.0, 12, 9],
+                    //     [0.6, 12, 9],
+                    //     [0.4, 12, 10],
+                    //     [0.2, 12, 9],
+                    //     [0.4, 12, 10],
+                    //     [0.6, 12, 10],
+                    //     [0.8, 12, 10],
+                    //     [1.2, 12, 10],
+                    //     [1.4, 12, 11],
+                    // ]
+                    function plotOutColumn(arr) {
+                      arr.forEach((each, index) => {
+                        if(index !== 0) {
+                          tide[index - 1] = each[0]
+                          swellSize[index -1] = each[1]
+                          swellPeriods[index -1] = each[2]
+                        }
+                      })
+
+                      console.log(tide)
+                      console.log(swellSize)
+                      console.log(swellPeriods)
+                    }
+                    plotOutColumn(sampleData)
+
+                //   })  //end of callback
+                }
+
+                // wave2 = new WaveLeft(p.height/2, swellSize, swellPeriods, p.map(p.mouseY, 0, p.height, 1.3, 1.45));
+
+                class WaveLeft {
+                constructor(offset, waveHeightArr, wavePeriodsArr, exponential = 1.4) {
+
+                    //common
+                    this.noiseOffset = p.random(1000,2000);
+                    this.currentHour = hourly_counter //global
+                    this.sineCurve = (theta) => {
+                    return p.sin(theta)
+                    }
+                    this.waveHeightArr = waveHeightArr
+                    this.wavePeriodsArr = wavePeriodsArr
+                    this.waveHeight = this.waveHeightArr[this.currentHour]
+                    this.wavePeriods = this.wavePeriodsArr[this.currentHour]
+                    this.easing = 1
+
+                    //common different value
+                    this.between = p.windowHeight/2 + 200;     //from y1-top to y2-bot
+                    this.offset = offset;
+                    this.amplitude = 1 // * replaced with newAmplitude
+                    this.newAngle = 0.07
+                    this.newAmplitude = p.random(5, 100)
+                    this.adding_noise = 1
+                    this.temp_noise = 0.005
+
+                    //custom
+                    this.exponential = exponential
+                    this.x1;
+                    this.x2;
+                }
+
+                setCurrentHour(hourly_counter) {
+                    this.currentHour = hourly_counter
+                    // console.log(this.waveHeightArr)
+                    this.setCurrentWaveHeightPeriods()
+                }
+
+                setCurrentWaveHeightPeriods() {
+                    this.waveHeight = this.waveHeightArr[this.currentHour]
+                    this.wavePeriods = this.wavePeriodsArr[this.currentHour]
+                    // console.log(this.waveHeight, this.wavePeriods, this.currentHour)
+                }
+
+                addNoise() {
+                    let currentSinAngle = this.sineCurve(wave2Angle)
+
+                    if (currentSinAngle > -1 && currentSinAngle < -0.99995) { //very bottom
+
+                        this.temp_noise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.15);
+                        this.easing = p.map(p.random(0,100), 0, 100, 0.5, 1.5);
+                        // this.setAmplitude()  // used for testing purposes
+                        // console.log(this.temp_noise)
+                    }
+                    else if (currentSinAngle > 0.9999 && currentSinAngle < 1) {           //very top point
+                    }
+
+                    if ( -1 < currentSinAngle && currentSinAngle < 1) {            //in between
+                        this.adding_noise = this.temp_noise
+
+                    }
+                }
+
+                // setAmplitude() {
+                //   this.newAmplitude = p.random(400)
+                //   this.newAngle = p.random(0.05, 0.005)
+                // }
+
+                setPerspective() {
+                    this.exponential = p.map(p.mouseY, 0, p.height, 1.3, 1.45)
+                }
+
+                amplitude_change(){
+                    this.newAmplitude = p.map(this.waveHeight, 0, p.width, 5, 100)     //hardcoding to see it doesn't fluctuates too much
+                    this.newAngle = p.map(this.wavePeriods, 0, p.width, 0.05, 0.005 )
+                    // increase += 0.4;        // or you can increment like this   //pass in the increase as arg
+                }
+
+                displayLines() {
+                    p.strokeCap(p.ROUND);
+                    p.strokeWeight(2);
+                    p.beginShape(p.LINES);
+                    wave2Angle += (this.newAngle * this.easing)
+
+                    this.amplitude = this.newAmplitude
+
+                    if(linesY1[1]){ this.offset = linesY1[1]}
+
+                    linesY1[0] = this.offset + this.sineCurve(wave2Angle) * (this.amplitude * this.adding_noise)     //top x,y
+                    linesY2[0] = this.offset + this.sineCurve(wave2Angle) * (this.amplitude * this.adding_noise) + this.between
+
+                    if(p.frameCount % myFrameCount == 0) {
+                        for(let i = 1; i < linesY1.length; i += 4) {  // 1, 2, 3, 4, 5, till window.innerWidth - 500
+                            let add_color = () => {
+                                let r_normalize = p.map(i, 1, linesY1.length, 37, 11);
+                                let g_normalize = p.map(i, 1, linesY1.length, 61, 50);
+                                let b_normalize = p.map(i, 1, linesY1.length, 62,100);
+                                this.opacity_percentile = p.map(i, 1, linesY1.length, 1, 0); //normalizing based on how many lines
+                                p.stroke(`rgba(${r_normalize}%,${g_normalize}%,${b_normalize}%,${this.opacity_percentile})`);
+                            }
+                            add_color();
+
+                            let xPerspective = 500
+
+                            this.x1 = i
+                            this.x2 = p.pow(i, this.exponential)
+
+                            p.vertex( this.x1, linesY1[i])
+                            p.vertex( this.x2, linesY2[i])
+                        }
+
+                        p.endShape();
+                    }
+
+                    this.noiseOffset += 0.001;
+                    }
+
+            } // end of WaveLeft
+
+            p.setup = function(){
+                p.strokeCap(p.SQUARE);
+                let cnv = p.createCanvas(window.innerWidth, window.innerHeight, p.P2D);
+                cnv.parent('container');
+                p.noiseDetail(24);
+
+                // blending canvas
+                const canvas = document.getElementById('defaultCanvas0');
+                const ctx = canvas.getContext('2d');
+                ctx.globalCompositeOperation = 'xor';
+        
+        
+                wave2 = new WaveLeft(p.height/2, swellSize, swellPeriods, p.map(p.mouseY, 0, p.height, 1.3, 1.45));
+            }
+        
+            p.draw = function() {
+                if(p.frameCount % myFrameCount == 0) {
+                  p.clear()
+                }
+        
+                // wave2 = new WaveLeft(p.height/2, swellSize[7], swellPeriods[7], p.map(p.mouseY, 0, p.height, 1.3, 1.45));
+                myClock(p)
+        
+        
+        
+                shiftRight()
+                wave2.addNoise();
+                wave2.displayLines()
+                wave2.setCurrentHour(hourly_counter)
+                wave2.setPerspective()
+                wave2.amplitude_change()  //for wave2 -> its prolly better to do with framecount % 2 == 0
+            }
+        
+            p.keyPressed = function() {
+                console.log(p.frameRate(),': framerate')
+                // linesY1.forEach((each)=>{console.log(each)})
+                // linesY2.forEach((each)=>{console.log(each)})
+        
+                console.log(`Time: ${hourly_counter + 1}:00` + am_or_pm)
+            }
+            p.mousePressed = function() {
+        
+            }
+
+        }
+
+        new p5(sketch, 'container')
+
+
+    </script>
+</body>
+</html>
