@@ -7,7 +7,6 @@
 
 </head>
 <body>
-
     <div id="container"></div>
 
     <script src="./p5/p5.min.js"></script>
@@ -71,6 +70,7 @@
 
         let counter = 1
         let myFrameCount = 2
+        let currentSinAngle;
 
         function parseData(p, arr) {
         // looping 2-dimensional arr -> normalize, rows bc loadTable
@@ -100,10 +100,17 @@
                 //     sampleData = parseData(p, sampleTable)
                 //     console.table(sampleData,'sample Data')
                     sampleData = [
-                        [1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4],
-                        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7],
-                        [7, 8, 7, 8, 7, 8, 10, 5, 5, 6, 7, 8, 6, 6, 6, 6, 6, 10, 9 ,8, 6, 6, 6, 6, 6]
+                        [1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2],  // not being used
+                        // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6 ],     //swell size
+                        [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ],     //swell size
+                        // [7, 8, 7, 8, 7, 8, 10, 5, 5, 6, 7, 8, 6, 6, 6, 6, 6, 10, 9 ,8, 6, 6, 6, 6 ],    //swell periods
+
+                        [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 10, 9 ,8, 6, 6, 6, 6 ],     //swell periods
                     ]
+
+                    // console.log(sampleData[0].length)
+                    // console.log(sampleData[1].length)
+                    // console.log(sampleData[2].length)
 
 
                     // sampleData = [
@@ -133,17 +140,17 @@
                     //     [1.4, 12, 11],
                     // ]
                     function plotOutColumn(arr) {
-                      arr.forEach((each, index) => {
-                        if(index !== 0) {
-                          tide[index - 1] = each[0]
-                          swellSize[index -1] = each[1]
-                          swellPeriods[index -1] = each[2]
-                        }
-                      })
+                    //   arr.forEach((each, index) => {
+                    //     if(index !== 0) {
+                    //       tide[index - 1] = each[0]
+                    //       swellSize[index -1] = each[1]
+                    //       swellPeriods[index -1] = each[2]
+                    //     }
+                    //   })
 
-                      console.log(tide)
-                      console.log(swellSize)
-                      console.log(swellPeriods)
+                    //   console.log(tide)
+                    //   console.log(swellSize)
+                    //   console.log(swellPeriods)
                     }
                     plotOutColumn(sampleData)
 
@@ -157,9 +164,10 @@
 
                     //common
                     this.noiseOffset = p.random(1000,2000);
+                
                     this.currentHour = hourly_counter //global
                     this.sineCurve = (theta) => {
-                    return p.sin(theta)
+                        return p.sin(theta)
                     }
                     this.waveHeightArr = waveHeightArr
                     this.wavePeriodsArr = wavePeriodsArr
@@ -173,11 +181,11 @@
                     this.amplitude = 1 // * replaced with newAmplitude
                     this.newAngle = 0.07
                     this.newAmplitude = p.random(5, 100)
-                    this.adding_noise = 1
-                    this.temp_noise = 0.005
+                    this.adding_noise = 1       // should just initiate with 0.005 value, since it will be mulitplied to amplitude anyways, meaning 1 is too big
+                    this.temp_noise = 0.005     // these two will be varied from 0 ~ 0.15
 
                     //custom
-                    this.exponential = exponential
+                    this.exponential = 1;
                     this.x1;
                     this.x2;
                 }
@@ -195,22 +203,44 @@
                 }
 
                 addNoise() {
-                    let currentSinAngle = this.sineCurve(wave2Angle)
-
+                    currentSinAngle = this.sineCurve(wave2Angle)
+                    // console.log(currentSinAngle,'cursinangle')
                     if (currentSinAngle > -1 && currentSinAngle < -0.99995) { //very bottom
 
-                        this.temp_noise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.15);
-                        this.easing = p.map(p.random(0,100), 0, 100, 0.5, 1.5);
+                        // this.temp_noise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.15);      // adds extra noise
+                        // this.easing = p.map(p.random(0,100), 0, 100, 0.5, 1.5);                 //what helps either to be + by 50% or - by 50%; * with new anlge
                         // this.setAmplitude()  // used for testing purposes
                         // console.log(this.temp_noise)
+                        // console.log('sine curve very bottom')
+                        
                     }
                     else if (currentSinAngle > 0.9999 && currentSinAngle < 1) {           //very top point
+                        
+                    }
+
+                    if ( -1 < currentSinAngle && currentSinAngle < 1) {            //in between
+                        // this.adding_noise = this.temp_noise
+                        // console.log(this.newAngle)
+                    }
+
+                    if (currentSinAngle > -1 && currentSinAngle < -0.95) { //very bottom
+                        console.log('top')
+
+                        this.temp_noise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.15);      // adds extra noise
+                        this.easing = p.map(p.random(0,100), 0, 100, 0.5, 1.5); 
+
+                    }
+                    else if (currentSinAngle > 0.95 && currentSinAngle < 1) {           //very top point
+                        console.log('bot')
+                        this.temp_noise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.15);      // adds extra noise
+                        this.easing = p.map(p.random(0,100), 0, 100, 0.5, 1.5); 
                     }
 
                     if ( -1 < currentSinAngle && currentSinAngle < 1) {            //in between
                         this.adding_noise = this.temp_noise
-
                     }
+
+
                 }
 
                 // setAmplitude() {
@@ -223,26 +253,44 @@
                 }
 
                 amplitude_change(){
-                    this.newAmplitude = p.map(this.waveHeight, 0, p.width, 5, 100)     //hardcoding to see it doesn't fluctuates too much
-                    this.newAngle = p.map(this.wavePeriods, 0, p.width, 0.05, 0.005 )
+                    this.newAmplitude = p.map(this.waveHeight, 0, p.height, 5, 200)     //hardcoding to see it doesn't fluctuates too much
+                    // this.newAmplitude = p.random(400);
+                    this.newAngle = p.map(this.wavePeriods, 0, p.width, 0.05, 0.005 )     //hm whats behind this logic
+                    // console.log(p.noise(this.noiseOffset))
+                    // this.newAngle += p.noise(this.noiseOffset) / 10;
+
+                    // this.newAngle *= (p.map( p.noise(this.noiseOffset), 0, 1, 0.1, 3 ));    // speed -> this can be a good factor that dictates randomness of periods -> look into it
+
+                    // this.newAngle += 0.5;
                     // increase += 0.4;        // or you can increment like this   //pass in the increase as arg
+
+                    // if (currentSinAngle > -1 && currentSinAngle < -0.99995) { //very bottom
+                    //     // this.temp_noise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.15);
+                    //     // this.easing = p.map(p.random(0,100), 0, 100, 0.5, 1.5);
+                    //     // this.setAmplitude()  // used for testing purposes
+                    //     // console.log(this.temp_noise)
+                    //     console.log('sine curve bottom, change angle?')
+                    // }
+                    // else if (currentSinAngle > 0.9999 && currentSinAngle < 1) {           //very top point
+
+                    // }
                 }
 
                 displayLines() {
                     p.strokeCap(p.ROUND);
                     p.strokeWeight(2);
                     p.beginShape(p.LINES);
-                    wave2Angle += (this.newAngle * this.easing)
+                    wave2Angle += (this.newAngle * this.easing) // higher the number, faster it goes, more curves
 
                     this.amplitude = this.newAmplitude
 
                     if(linesY1[1]){ this.offset = linesY1[1]}
 
-                    linesY1[0] = this.offset + this.sineCurve(wave2Angle) * (this.amplitude * this.adding_noise)     //top x,y
+                    linesY1[0] = this.offset + this.sineCurve(wave2Angle) * (this.amplitude * this.adding_noise)   //top x,y
                     linesY2[0] = this.offset + this.sineCurve(wave2Angle) * (this.amplitude * this.adding_noise) + this.between
 
                     if(p.frameCount % myFrameCount == 0) {
-                        for(let i = 1; i < linesY1.length; i += 4) {  // 1, 2, 3, 4, 5, till window.innerWidth - 500
+                        for(let i = 1; i < linesY1.length; i += 10) {  // 1, 2, 3, 4, 5, till window.innerWidth - 500
                             let add_color = () => {
                                 let r_normalize = p.map(i, 1, linesY1.length, 37, 11);
                                 let g_normalize = p.map(i, 1, linesY1.length, 61, 50);
@@ -254,7 +302,7 @@
 
                             let xPerspective = 500
 
-                            this.x1 = i
+                            this.x1 = i 
                             this.x2 = p.pow(i, this.exponential)
 
                             p.vertex( this.x1, linesY1[i])
@@ -281,7 +329,7 @@
                 ctx.globalCompositeOperation = 'xor';
         
         
-                wave2 = new WaveLeft(p.height/2, swellSize, swellPeriods, p.map(p.mouseY, 0, p.height, 1.3, 1.45));
+                wave2 = new WaveLeft(p.height/2, sampleData[1], sampleData[2], p.map(p.mouseY, 0, p.height, 1.3, 1.45));
             }
         
             p.draw = function() {
@@ -298,8 +346,8 @@
                 wave2.addNoise();
                 wave2.displayLines()
                 wave2.setCurrentHour(hourly_counter)
-                wave2.setPerspective()
-                wave2.amplitude_change()  //for wave2 -> its prolly better to do with framecount % 2 == 0
+                // wave2.setPerspective()
+                wave2.amplitude_change();
             }
         
             p.keyPressed = function() {

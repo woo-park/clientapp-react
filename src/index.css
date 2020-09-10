@@ -199,7 +199,11 @@ input[type=button], input[type=submit] {
   display: block;
   width: 100%;
   word-wrap: break-word;
+  padding-top: 5px;
+  padding-left: 1rem;
+  padding-right: 1rem;
   /* margin-bottom: 10px; */
+
 }
 
 
@@ -933,7 +937,7 @@ option:hover:before{
 
 
 .PostsWrapper{
-  border:1px solid black;
+  /* border:1px solid black; */
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -942,38 +946,80 @@ option:hover:before{
   /* max-height:500px; */
   /* align-items: center; */
   justify-content: center;
+  height: 100%;
 }
 
 .leftHand {
-
-  min-height:100%;
-  /* background-color: olive; */
+  /* height: 100%; */
+  min-height: 100%;
+  background-color: #111111;
+  /* border-right: 2px solid var(--bgBlack); */
   position: relative;
   /* min-width:400px; */
   /* max-width: 100%; */
   max-width: 600px;
+  display: flex;
+  justify-content: center;
 
+
+}
+
+.leftHand:hover:before{
+  opacity: 0;
 }
 
 .postImage{
   width:100%;
   height:100%;
-  /* object-fit:contain; */
+  object-fit:contain !important;
+}
+
+.leftHand:before{
+  transition: all 0.5s ease;
+  content:'';
+  width:100%;
+  height:100%;
+  position: absolute;
+  background-color: var(--bgGrey);
+  opacity: 0.9;
+  top:0px;
+  left:0px;
+}
+
+
+.leftHand:hover > .absoluteCenterContainer{
+  font-size: 4vw;
+  width:80%;
+  margin-left:-40%;
+  height:80%;
+  margin-top:-40%;
+  border: 0px solid black;
 }
 
 /* dead center of parent container */
 .absoluteCenterContainer{
+  color:white;
+  font-size: 2vw;
   position: absolute;
-  top:50%;
+  /* top:50%; */
+  top:calc(50% + 2vw);
   left:50%;
   width:50%;
   height:50%;
   margin-top:-25%;
+  /* hmmmm responding differently with ipad mode and desktop mode */
   margin-left: -25%;
   /* background-color: blue; */
+  border: 1vw solid var(--bgGreyWhite);
+  /* padding: 1rem; */
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 1s ease;
+}
+
+.absoluteCenterContainer:hover{
+  opacity: 0;
 }
 
 .rightHand{
@@ -1006,6 +1052,10 @@ option:hover:before{
 
 .commentWrapper{
   line-height:1.5rem;
+  cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
 }
 
 .commentWrapper::before{
@@ -1016,6 +1066,7 @@ option:hover:before{
   content:'\a0 \a0 \a0 \a0 \a0 \a0 \a0 \a0 \a0 \21AA \a0 \a0 \a0'
   /* hex */
 }
+
 
 .commentSection{
   margin-top: auto;
@@ -1040,3 +1091,17 @@ option:hover:before{
   text-align:center;
   padding: 1rem;
 }
+
+
+/*
+#container:hover > #cube { background-color: yellow; }
+If cube is next to (after containers closing tag) the container:
+
+#container:hover + #cube { background-color: yellow; }
+If the cube is somewhere inside the container:
+
+#container:hover #cube { background-color: yellow; }
+If the cube is a sibling of the container:
+
+#container:hover ~ #cube { background-color: yellow; }
+*/

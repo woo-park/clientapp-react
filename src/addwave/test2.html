@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="./p5/p5.min.js"></script>
+
+    <script>
+        let sketch = function(p) {
+                p.preload = function() {
+                 
+                }   // end of preload
+
+                class WaveLeft {
+                    constructor(offset, waveHeightArr, wavePeriodsArr, exponential = 1.4) {
+
+                    
+                }
+            } // end of WaveLeft
+
+            p.setup = function() {
+                p.strokeCap(p.SQUARE);
+                let cnv = p.createCanvas(window.innerWidth, window.innerHeight, p.P2D);
+                cnv.parent('container');
+                p.noiseDetail(24);
+
+                // blending canvas
+                const canvas = document.getElementById('defaultCanvas0');
+                const ctx = canvas.getContext('2d');
+                ctx.globalCompositeOperation = 'xor';
+        
+        
+                wave2 = new WaveLeft(p.height/2, sampleData[1], sampleData[2], p.map(p.mouseY, 0, p.height, 1.3, 1.45));
+            }
+        
+            p.draw = function() {
+                if(p.frameCount % myFrameCount == 0) {
+                  p.clear()
+                }
+        
+              
+        
+        
+        
+                shiftRight()
+                wave2.addNoise();
+                wave2.displayLines()
+            
+            }
+        
+            p.keyPressed = function() {
+                console.log(p.frameRate(),': framerate')
+            }
+            p.mousePressed = function() {
+        
+            }
+
+        }
+
+        new p5(sketch, 'container')
+    </script>
+</body>
+</html>
