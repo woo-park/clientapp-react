@@ -104,21 +104,21 @@
 
                         if(sineCurve > -1 && sineCurve < -0.95) {
                             //top
-                            this.tempNoise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 1.45);
+                            this.tempNoise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.8);      //0.15 -> 1.45
 
                         } else if (sineCurve > 0.95 && sineCurve < 1) {
                             //bot
-                            this.tempNoise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 1.45); 
+                            this.tempNoise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 0.8); 
 
                         }
 
                         if ( -1 < sineCurve && sineCurve < 1) {            //in between
                             
-
-                            if(this.tempNoise !== undefined) {
-                                this.noise =  parseFloat(this.tempNoise.toFixed(2))
-                                console.log('In between noise: ', this.noise);
-                            }
+                            this.noise = this.tempNoise;
+                            // if(this.tempNoise !== undefined) {
+                            //     this.noise =  parseFloat(this.tempNoise.toFixed(2))
+                            //     console.log('In between noise: ', this.noise);
+                            // }
                            
                         }
                     }
@@ -146,7 +146,7 @@
                             }
                             p.endShape();
                         }
-                        this.noiseOffset += 0.005;
+                        this.noiseOffset += 0.001;
                     }
                     
                     log() {
