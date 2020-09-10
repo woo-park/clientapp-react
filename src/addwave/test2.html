@@ -12,16 +12,152 @@
     <script src="./p5/p5.min.js"></script>
 
     <script>
+        let wave;
+        let myFrameCount = 1;
+
         let sketch = function(p) {
                 p.preload = function() {
                  
                 }   // end of preload
 
-                class WaveLeft {
-                    constructor(offset, waveHeightArr, wavePeriodsArr, exponential = 1.4) {
+                class Wave {
+                    constructor() {
+                        this.linesY1 = [];
+                        this.linesY2 = [];
 
+                        this.waveOffsets = [1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+                        this.waveHeights = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ]                       
+                        this.wavePeriods = [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 10, 9 ,8, 6, 6, 6, 6 ]
+                        
+                        this.exponential = 1.4;
+                        
+                        this.noiseOffset = p.random(1000, 2000);
+
+                        this.sineCurve = (theta) => {
+                            return p.sin(theta);
+                        }
+
+                        this.activeHour = 0;
+
+                        this.offset = p.height/2 + this.waveOffsets[this.activeHour]; 
+                        this.height = this.waveHeights[this.activeHour]; 
+                        this.period = this.wavePeriods[this.activeHour]; 
                     
-                }
+                       
+                        this.angle = 0;
+
+                        this.noise = 1;
+                        this.tempNoise;
+
+                        this.speed = 1;
+                        
+                        this.angleIncrement = 0;
+
+                        this.amplitude = 200;
+
+                        this.between = 200;
+                    }
+
+                    // setOffset() { this.offset = this.waveOffsets[this.activeHour]; }
+                    // setHeight() { this.height = this.waveHeights[this.activeHour]; }
+                    // setPeriod() { this.period = this.wavePeriods[this.activeHour]; }
+                    
+                   
+
+                    init() {
+                    
+                        for(let i = 0; i < window.innerWidth - 300; i ++) {
+                            this.linesY1.push(null);
+                            this.linesY2.push(null);
+                        }
+                        
+                    }
+
+                    shiftRight() {
+                        for(let i = this.linesY1.length - 1; i > 0; i -= 1) {
+                            this.linesY1[i] = this.linesY1[i - 1];                            
+                            this.linesY2[i] = this.linesY2[i - 1];
+                        }
+                    }
+
+                    main() {
+                        
+                        this.shiftRight();
+                        this.setAmplitude();
+                        this.incrementAngle();
+                        this.addNoise();
+                        this.displayLines();
+                    }
+
+                    setAmplitude() {
+                        this.amplitude = p.map(this.height, 0, 10, 5, 200);         // under assumption that wave height is between 0 meter to 10 meters
+                    }
+                    
+                    incrementAngle() {
+                        // higher period number means smaller angle increment
+                        this.angleIncrement = p.map(this.period, 0, p.width, 0.05, 0.005 ); 
+                        this.angle += (this.angleIncrement * this.speed);   // easing
+                    }
+
+                    addNoise() {
+                        let sineCurve = this.sineCurve(this.angle);
+
+                        if(sineCurve > -1 && sineCurve < -0.95) {
+                            //top
+                            this.tempNoise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 1.45);
+
+                        } else if (sineCurve > 0.95 && sineCurve < 1) {
+                            //bot
+                            this.tempNoise = p.map( p.noise(this.noiseOffset), 0, 1, 0, 1.45); 
+
+                        }
+
+                        if ( -1 < sineCurve && sineCurve < 1) {            //in between
+                            
+
+                            if(this.tempNoise !== undefined) {
+                                this.noise =  parseFloat(this.tempNoise.toFixed(2))
+                                console.log('In between noise: ', this.noise);
+                            }
+                           
+                        }
+                    }
+
+                    displayLines() {
+                        p.strokeCap(p.ROUND);
+                        p.strokeWeight(2);
+                        p.beginShape(p.LINES);
+                        // if(this.linesY1[1]){ this.offset = this.linesY1[1]}
+                        this.linesY1[0] = this.offset + this.sineCurve(this.angle) * (this.amplitude * this.noise);
+                        this.linesY2[0] = this.offset + this.sineCurve(this.angle) * (this.amplitude * this.noise) + this.between;
+                        // console.log('noise: ', this.noise)
+
+                        if(p.frameCount % myFrameCount == 0) {
+                            for(let i = 1; i < this.linesY1.length; i += 10) {
+
+                                this.x1 = i;
+                                this.x2 = p.pow(i, this.exponential);
+                                
+                                if(this.linesY1[i] != undefined) {
+                                    p.vertex(this.x1, this.linesY1[i])
+                                    p.vertex(this.x2, this.linesY2[i])
+                                }
+                               
+                            }
+                            p.endShape();
+                        }
+                        this.noiseOffset += 0.005;
+                    }
+                    
+                    log() {
+                        console.log("angle: ", this.angle)
+                        console.log("amplitude: ", this.amplitude)
+                        console.log("noise: ", this.noise)
+                        console.log(this.linesY1)
+                     
+                    }
+
+                
             } // end of WaveLeft
 
             p.setup = function() {
@@ -36,7 +172,8 @@
                 ctx.globalCompositeOperation = 'xor';
         
         
-                wave2 = new WaveLeft(p.height/2, sampleData[1], sampleData[2], p.map(p.mouseY, 0, p.height, 1.3, 1.45));
+                wave = new Wave();
+                wave.init(); 
             }
         
             p.draw = function() {
@@ -44,18 +181,12 @@
                   p.clear()
                 }
         
-              
-        
-        
-        
-                shiftRight()
-                wave2.addNoise();
-                wave2.displayLines()
-            
+                wave.main();
             }
         
             p.keyPressed = function() {
                 console.log(p.frameRate(),': framerate')
+                wave.log();
             }
             p.mousePressed = function() {
         
